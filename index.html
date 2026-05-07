@@ -1,870 +1,760 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>下东430号 · 出租屋管理</title>
-<style>
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-body{font-family:'PingFang SC','Helvetica Neue',sans-serif;background:#f5f6fa;color:#222;min-height:100vh;padding-bottom:80px;}
-.topbar{background:linear-gradient(135deg,#1a73e8,#0d47a1);color:#fff;padding:16px 18px 12px;position:sticky;top:0;z-index:100;box-shadow:0 2px 10px rgba(0,0,0,0.18);}
-.topbar h1{font-size:17px;font-weight:700;}
-.topbar .sub{font-size:11px;opacity:0.75;margin-top:2px;}
-.sync-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#4caf50;margin-right:5px;vertical-align:middle;}
-.sync-dot.syncing{background:#fbbc04;animation:pulse 1s infinite;}
-.sync-dot.error{background:#ea4335;}
-@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
-
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;display:flex;border-top:1px solid #e8e8e8;z-index:200;box-shadow:0 -2px 12px rgba(0,0,0,0.08);}
-.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:7px 0 5px;cursor:pointer;color:#999;font-size:9px;gap:2px;}
-.nav-item .icon{font-size:20px;line-height:1;}
-.nav-item.active{color:#1a73e8;}
-
-.page{display:none;padding:12px;}
-.page.active{display:block;}
-
-.card{background:#fff;border-radius:14px;padding:15px;margin-bottom:12px;box-shadow:0 1px 6px rgba(0,0,0,0.07);}
-.card-title{font-size:14px;font-weight:700;color:#1a73e8;margin-bottom:12px;}
-
-.form-item{margin-bottom:10px;}
-.form-item label{display:block;font-size:12px;color:#666;margin-bottom:4px;font-weight:500;}
-.form-item input,.form-item select,.form-item textarea{width:100%;padding:10px 12px;border:1.5px solid #e8e8e8;border-radius:10px;font-size:15px;outline:none;background:#fafafa;-webkit-appearance:none;}
-.form-item input:focus,.form-item select:focus{border-color:#1a73e8;background:#fff;box-shadow:0 0 0 3px rgba(26,115,232,0.1);}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:4px;padding:11px 16px;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.15s;width:100%;margin-bottom:8px;}
-.btn:active{transform:scale(0.97);}
-.btn:last-child{margin-bottom:0;}
-.btn-primary{background:#1a73e8;color:#fff;}
-.btn-success{background:#34a853;color:#fff;}
-.btn-danger{background:#ea4335;color:#fff;}
-.btn-warning{background:#fbbc04;color:#333;}
-.btn-outline{background:#fff;color:#1a73e8;border:1.5px solid #1a73e8;}
-.btn-gray{background:#f0f0f0;color:#555;}
-.btn-orange{background:#f97316;color:#fff;}
-.btn-sm{padding:6px 11px;font-size:12px;width:auto;margin-bottom:0;}
-.btn-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;}
-
-.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
-.stat-card{background:#fff;border-radius:12px;padding:12px;text-align:center;box-shadow:0 1px 6px rgba(0,0,0,0.07);}
-.stat-num{font-size:22px;font-weight:800;color:#1a73e8;line-height:1.1;}
-.stat-num.red{color:#ea4335;}
-.stat-num.green{color:#34a853;}
-.stat-num.orange{color:#f97316;}
-.stat-label{font-size:10px;color:#999;margin-top:3px;}
-
-.list-item{background:#fff;border-radius:12px;padding:13px;margin-bottom:9px;box-shadow:0 1px 5px rgba(0,0,0,0.06);}
-.item-row1{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;}
-.item-name{font-size:15px;font-weight:700;}
-.room-tag{background:#e8f0fe;color:#1a73e8;border-radius:6px;padding:2px 8px;font-size:12px;font-weight:600;}
-.item-info{font-size:12px;color:#666;line-height:1.8;}
-.item-amount{font-size:17px;font-weight:800;color:#1a73e8;}
-
-.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;}
-.badge-green{background:#e6f4ea;color:#34a853;}
-.badge-red{background:#fce8e6;color:#ea4335;}
-.badge-yellow{background:#fef7e0;color:#f9a825;}
-.badge-blue{background:#e8f0fe;color:#1a73e8;}
-.badge-gray{background:#f0f0f0;color:#888;}
-.badge-orange{background:#fff3e0;color:#f97316;}
-
-.bill-card{background:#fff;border-radius:14px;padding:18px;margin-bottom:12px;box-shadow:0 2px 10px rgba(0,0,0,0.1);border:1px solid #e8f0fe;}
-.bill-header{text-align:center;margin-bottom:14px;}
-.bill-header .title{font-size:17px;font-weight:800;color:#1a73e8;}
-.bill-header .sub{font-size:12px;color:#888;margin-top:3px;}
-.bill-line{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px dashed #f0f0f0;font-size:13px;}
-.bill-line .key{color:#555;}
-.bill-line .val{font-weight:600;}
-.bill-total-line{display:flex;justify-content:space-between;padding:10px 0 0;font-size:16px;font-weight:800;color:#1a73e8;border-top:2px solid #1a73e8;margin-top:4px;}
-.bill-note{text-align:center;font-size:11px;color:#aaa;margin-top:10px;padding-top:8px;border-top:1px dashed #eee;}
-
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:500;align-items:flex-end;justify-content:center;}
-.modal-overlay.show{display:flex;}
-.modal-box{background:#fff;border-radius:20px 20px 0 0;padding:18px 16px 28px;width:100%;max-height:92vh;overflow-y:auto;animation:slideUp 0.25s ease;}
-@keyframes slideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
-.modal-handle{width:36px;height:4px;background:#ddd;border-radius:2px;margin:0 auto 14px;}
-.modal-title{font-size:16px;font-weight:700;margin-bottom:14px;}
-
-.confirm-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:600;align-items:center;justify-content:center;}
-.confirm-overlay.show{display:flex;}
-.confirm-box{background:#fff;border-radius:16px;padding:22px 18px;width:86%;max-width:320px;text-align:center;}
-.confirm-box .ct{font-size:15px;font-weight:700;margin-bottom:6px;}
-.confirm-box .cs{font-size:13px;color:#666;margin-bottom:18px;line-height:1.5;}
-.confirm-btns{display:flex;gap:8px;}
-.confirm-btns .btn{margin-bottom:0;}
-
-.loading-screen{position:fixed;inset:0;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;}
-.loading-screen .logo{font-size:48px;margin-bottom:16px;}
-.loading-screen .text{font-size:15px;color:#666;margin-bottom:20px;}
-.spinner{width:36px;height:36px;border:3px solid #e8e8e8;border-top-color:#1a73e8;border-radius:50%;animation:spin 0.8s linear infinite;}
-@keyframes spin{to{transform:rotate(360deg);}}
-
-.empty{text-align:center;color:#ccc;padding:35px 20px;font-size:13px;}
-.empty .ei{font-size:36px;margin-bottom:8px;}
-.section-label{font-size:12px;color:#888;font-weight:600;margin:14px 0 7px;padding-left:2px;}
-.calc-box{background:#f0f6ff;border-radius:10px;padding:10px 12px;font-size:12px;color:#1a73e8;margin-top:8px;line-height:1.9;}
-.warn-box{background:#fff8e1;border-radius:10px;padding:10px 12px;font-size:12px;color:#f57c00;margin-top:8px;line-height:1.7;}
-
-.tab-bar{display:flex;background:#f0f2f5;border-radius:10px;padding:3px;margin-bottom:12px;}
-.tab-btn{flex:1;padding:7px;text-align:center;font-size:12px;font-weight:600;border-radius:8px;cursor:pointer;color:#888;transition:all 0.2s;}
-.tab-btn.active{background:#fff;color:#1a73e8;box-shadow:0 1px 4px rgba(0,0,0,0.1);}
-
-.year-selector{display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:12px;}
-.year-selector button{background:none;border:none;font-size:20px;cursor:pointer;color:#1a73e8;padding:4px 10px;}
-.year-selector span{font-size:16px;font-weight:700;}
-
-.toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.9);background:rgba(0,0,0,0.75);color:#fff;padding:11px 20px;border-radius:10px;font-size:13px;z-index:9999;opacity:0;transition:all 0.25s;pointer-events:none;}
-.toast.show{opacity:1;transform:translate(-50%,-50%) scale(1);}
-
-@media(min-width:600px){
-  body{max-width:480px;margin:0 auto;box-shadow:0 0 30px rgba(0,0,0,0.1);}
-  .bottom-nav{max-width:480px;left:50%;transform:translateX(-50%);}
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>下东 430 号 · 出租屋管理</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Helvetica Neue', sans-serif;
+            background: #f8f9fa;
+            color: #1a1a1a;
+            min-height: 100vh;
+            padding-bottom: 80px;
+            line-height: 1.5;
+        }
+        .topbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            padding: 20px 18px 14px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 12px rgba(102, 126, 234, 0.3);
+        }
+        .topbar h1 { font-size: 18px; font-weight: 700; letter-spacing: -0.3px; }
+        .topbar .sub { font-size: 12px; opacity: 0.85; margin-top: 4px; font-weight: 400; }
+        .sync-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #48c774;
+            margin-right: 6px;
+            vertical-align: middle;
+            box-shadow: 0 0 0 2px rgba(72, 199, 116, 0.2);
+        }
+        .sync-dot.syncing { background: #ffdd57; animation: pulse 1s infinite; }
+        .sync-dot.error { background: #f14668; }
+        @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.1); } }
+        
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #fff;
+            display: flex;
+            border-top: 1px solid #e8e8e8;
+            z-index: 200;
+            box-shadow: 0 -2px 16px rgba(0, 0, 0, 0.06);
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+        .nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 0 6px;
+            cursor: pointer;
+            color: #999;
+            font-size: 10px;
+            gap: 3px;
+            transition: all 0.2s ease;
+        }
+        .nav-item .icon { font-size: 22px; line-height: 1; transition: transform 0.2s ease; }
+        .nav-item.active { color: #667eea; }
+        .nav-item.active .icon { transform: scale(1.1); }
+        
+        .page { display: none; padding: 16px; }
+        .page.active { display: block; }
+        
+        .card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 18px;
+            margin-bottom: 14px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(0, 0, 0, 0.04);
+        }
+        .card-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 14px;
+            letter-spacing: -0.2px;
+        }
+        
+        .form-item { margin-bottom: 12px; }
+        .form-item label {
+            display: block;
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+        .form-item input, .form-item select, .form-item textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border: 2px solid #e8e8e8;
+            border-radius: 12px;
+            font-size: 15px;
+            outline: none;
+            background: #fafafa;
+            -webkit-appearance: none;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+        .form-item input:focus, .form-item select:focus {
+            border-color: #667eea;
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 13px 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+            margin-bottom: 10px;
+            letter-spacing: -0.2px;
+        }
+        .btn:active { transform: scale(0.97); }
+        .btn:last-child { margin-bottom: 0; }
+        .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3); }
+        .btn-success { background: linear-gradient(135deg, #48c774 0%, #29b67a 100%); color: #fff; box-shadow: 0 4px 12px rgba(72, 199, 116, 0.3); }
+        .btn-danger { background: linear-gradient(135deg, #f14668 0%, #e03a5a 100%); color: #fff; box-shadow: 0 4px 12px rgba(241, 70, 104, 0.3); }
+        .btn-warning { background: linear-gradient(135deg, #ffdd57 0%, #ffd93d 100%); color: #333; box-shadow: 0 4px 12px rgba(255, 221, 87, 0.3); }
+        .btn-outline { background: #fff; color: #667eea; border: 2px solid #667eea; }
+        .btn-gray { background: #f5f5f5; color: #666; }
+        .btn-orange { background: linear-gradient(135deg, #ff9f43 0%, #ff8c2a 100%); color: #fff; box-shadow: 0 4px 12px rgba(255, 159, 67, 0.3); }
+        .btn-sm { padding: 8px 14px; font-size: 13px; width: auto; margin-bottom: 0; }
+        .btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+        
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+        .stat-card {
+            background: #fff;
+            border-radius: 14px;
+            padding: 16px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(0, 0, 0, 0.04);
+        }
+        .stat-num { font-size: 24px; font-weight: 800; color: #667eea; line-height: 1.1; letter-spacing: -0.5px; }
+        .stat-num.red { color: #f14668; }
+        .stat-num.green { color: #48c774; }
+        .stat-num.orange { color: #ff9f43; }
+        .stat-label { font-size: 11px; color: #999; margin-top: 4px; font-weight: 500; }
+        
+        .list-item {
+            background: #fff;
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            transition: transform 0.2s ease;
+        }
+        .list-item:active { transform: scale(0.98); }
+        .item-row1 { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+        .item-name { font-size: 16px; font-weight: 700; color: #1a1a1a; }
+        .room-tag {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            border-radius: 8px;
+            padding: 3px 10px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .item-info { font-size: 13px; color: #666; line-height: 1.9; }
+        .item-amount { font-size: 18px; font-weight: 800; color: #667eea; letter-spacing: -0.5px; }
+        
+        .badge { display: inline-block; padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+        .badge-green { background: #d4edda; color: #28a745; }
+        .badge-red { background: #f8d7da; color: #dc3545; }
+        .badge-yellow { background: #fff3cd; color: #ffc107; }
+        .badge-blue { background: #d1ecf1; color: #17a2b8; }
+        .badge-gray { background: #e9ecef; color: #6c757d; }
+        .badge-orange { background: #ffe5d0; color: #fd7e14; }
+        
+        .bill-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 14px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+            border: 2px solid #e8f0fe;
+        }
+        .bill-header { text-align: center; margin-bottom: 16px; }
+        .bill-header .title { font-size: 18px; font-weight: 800; color: #667eea; letter-spacing: -0.3px; }
+        .bill-header .sub { font-size: 13px; color: #888; margin-top: 4px; }
+        .bill-line { display: flex; justify-content: space-between; padding: 9px 0; border-bottom: 1px dashed #e8e8e8; font-size: 14px; }
+        .bill-line .key { color: #555; font-weight: 500; }
+        .bill-line .val { font-weight: 700; color: #1a1a1a; }
+        .bill-total-line { display: flex; justify-content: space-between; padding: 12px 0 0; font-size: 17px; font-weight: 800; color: #667eea; border-top: 2px solid #667eea; margin-top: 6px; letter-spacing: -0.5px; }
+        .bill-note { text-align: center; font-size: 12px; color: #999; margin-top: 12px; padding-top: 10px; border-top: 1px dashed #eee; }
+        
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 500;
+            align-items: flex-end;
+            justify-content: center;
+            backdrop-filter: blur(2px);
+        }
+        .modal-overlay.show { display: flex; }
+        .modal-box {
+            background: #fff;
+            border-radius: 20px 20px 0 0;
+            padding: 22px 18px 30px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .modal-handle { width: 40px; height: 4px; background: #ddd; border-radius: 2px; margin: 0 auto 16px; }
+        .modal-title { font-size: 17px; font-weight: 700; margin-bottom: 16px; color: #1a1a1a; letter-spacing: -0.3px; }
+        
+        .confirm-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 600;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(2px);
+        }
+        .confirm-overlay.show { display: flex; }
+        .confirm-box {
+            background: #fff;
+            border-radius: 18px;
+            padding: 24px 20px;
+            width: 88%;
+            max-width: 340px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+        }
+        .confirm-box .ct { font-size: 16px; font-weight: 700; margin-bottom: 8px; color: #1a1a1a; }
+        .confirm-box .cs { font-size: 14px; color: #666; margin-bottom: 20px; line-height: 1.6; }
+        .confirm-btns { display: flex; gap: 10px; }
+        .confirm-btns .btn { margin-bottom: 0; }
+        
+        .loading-screen {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+        .loading-screen .logo { font-size: 56px; margin-bottom: 20px; animation: bounce 1s infinite; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        .loading-screen .text { font-size: 16px; color: rgba(255, 255, 255, 0.95); margin-bottom: 24px; font-weight: 500; }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        .empty { text-align: center; color: #bbb; padding: 40px 20px; font-size: 14px; }
+        .empty .ei { font-size: 42px; margin-bottom: 10px; opacity: 0.6; }
+        .section-label { font-size: 13px; color: #888; font-weight: 700; margin: 18px 0 10px; padding-left: 4px; letter-spacing: -0.2px; text-transform: uppercase; }
+        .calc-box {
+            background: linear-gradient(135deg, #e8f0fe 0%, #f0f6ff 100%);
+            border-radius: 12px;
+            padding: 14px 16px;
+            font-size: 13px;
+            color: #667eea;
+            margin-top: 10px;
+            line-height: 2;
+            border: 1px solid #d0e1ff;
+        }
+        .warn-box {
+            background: linear-gradient(135deg, #fff8e1 0%, #fff9e8 100%);
+            border-radius: 12px;
+            padding: 14px 16px;
+            font-size: 13px;
+            color: #f57c00;
+            margin-top: 10px;
+            line-height: 1.8;
+            border: 1px solid #ffe0b2;
+        }
+        
+        .tab-bar {
+            display: flex;
+            background: #f0f2f5;
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 14px;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 9px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            color: #888;
+            transition: all 0.2s ease;
+        }
+        .tab-btn.active {
+            background: #fff;
+            color: #667eea;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        }
+        
+        .year-selector { display: flex; align-items: center; justify-content: center; gap: 18px; margin-bottom: 14px; }
+        .year-selector button {
+            background: #fff;
+            border: 2px solid #e8e8e8;
+            font-size: 18px;
+            cursor: pointer;
+            color: #667eea;
+            padding: 6px 12px;
+            border-radius: 10px;
+            transition: all 0.2s ease;
+            font-weight: 600;
+        }
+        .year-selector button:active { background: #667eea; color: #fff; border-color: #667eea; }
+        .year-selector span { font-size: 17px; font-weight: 700; color: #1a1a1a; min-width: 80px; text-align: center; }
+        
+        .toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            background: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            padding: 13px 24px;
+            border-radius: 14px;
+            font-size: 14px;
+            z-index: 9999;
+            opacity: 0;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+            font-weight: 500;
+        }
+        .toast.show { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        
+        .settings-section { margin-bottom: 20px; }
+        .settings-title { font-size: 14px; font-weight: 700; color: #667eea; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+        
+        @media (min-width: 600px) {
+            body { max-width: 480px; margin: 0 auto; box-shadow: 0 0 40px rgba(0, 0, 0, 0.08); }
+            .bottom-nav { max-width: 480px; left: 50%; transform: translateX(-50%); }
+        }
+    </style>
 </head>
 <body>
-
-<!-- 加载屏 -->
-<div class="loading-screen" id="loadingScreen">
-  <div class="logo">🏠</div>
-  <div class="text">下东430号 · 正在连接云端...</div>
-  <div class="spinner"></div>
-</div>
-
-<div class="topbar">
-  <h1><span class="sync-dot" id="syncDot"></span>下东430号 · 出租屋管理</h1>
-  <div class="sub" id="topDate"></div>
-</div>
-
-<div class="page active" id="page-home"></div>
-<div class="page" id="page-tenants"></div>
-<div class="page" id="page-meter"></div>
-<div class="page" id="page-bill"></div>
-<div class="page" id="page-finance"></div>
-<div class="page" id="page-more"></div>
-
-<div class="bottom-nav">
-  <div class="nav-item active" onclick="showPage('home',this)"><div class="icon">📊</div><div>总览</div></div>
-  <div class="nav-item" onclick="showPage('tenants',this)"><div class="icon">👥</div><div>租客</div></div>
-  <div class="nav-item" onclick="showPage('meter',this)"><div class="icon">⚡</div><div>抄表</div></div>
-  <div class="nav-item" onclick="showPage('bill',this)"><div class="icon">🧾</div><div>账单</div></div>
-  <div class="nav-item" onclick="showPage('finance',this)"><div class="icon">💰</div><div>财务</div></div>
-  <div class="nav-item" onclick="showPage('more',this)"><div class="icon">⚙️</div><div>更多</div></div>
-</div>
-
-<!-- 弹窗：租客 -->
-<div class="modal-overlay" id="tenantModal">
-  <div class="modal-box">
-    <div class="modal-handle"></div>
-    <div class="modal-title" id="tenantModalTitle">添加租客</div>
-    <input type="hidden" id="e_id">
-    <div class="form-row">
-      <div class="form-item"><label>姓名 *</label><input id="e_name" placeholder="租客姓名"></div>
-      <div class="form-item"><label>房间号 *</label><input id="e_room" placeholder="如 101"></div>
+    <!-- 加载屏 -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="logo">🏠</div>
+        <div class="text">下东 430 号 · 正在连接云端...</div>
+        <div class="spinner"></div>
     </div>
-    <div class="form-item"><label>联系电话</label><input id="e_phone" type="tel" placeholder="手机号码"></div>
-    <div class="form-item"><label>入住日期</label><input id="e_checkin" type="date"></div>
-    <div class="form-row">
-      <div class="form-item"><label>月租金（元）</label><input id="e_rent" type="number" placeholder="0" inputmode="decimal"></div>
-      <div class="form-item"><label>押金（元）</label><input id="e_deposit" type="number" placeholder="0" inputmode="decimal"></div>
+
+    <div class="topbar">
+        <h1><span class="sync-dot" id="syncDot"></span>下东 430 号 · 出租屋管理</h1>
+        <div class="sub" id="topDate"></div>
     </div>
-    <div class="form-item">
-      <label>押金状态</label>
-      <select id="e_depositStatus">
-        <option value="held">已收（在手）</option>
-        <option value="bad">未收（坏账）</option>
-        <option value="returned">已退还</option>
-      </select>
-    </div>
-    <div class="form-row">
-      <div class="form-item"><label>卫生费/月</label><input id="e_clean" type="number" placeholder="0" inputmode="decimal"></div>
-      <div class="form-item"><label>网费/月</label><input id="e_net" type="number" placeholder="0" inputmode="decimal"></div>
-    </div>
-    <div class="form-item"><label>备注</label><input id="e_note" placeholder="备注信息"></div>
-    <button class="btn btn-primary" onclick="saveTenant()">💾 保存</button>
-    <button class="btn btn-gray" onclick="closeModal('tenantModal')">取消</button>
-  </div>
-</div>
 
-<!-- 弹窗：抄表 -->
-<div class="modal-overlay" id="meterModal">
-  <div class="modal-box">
-    <div class="modal-handle"></div>
-    <div class="modal-title">⚡ 录入表数</div>
-    <div class="form-item"><label>租客</label><input id="m_tenant_name" readonly style="background:#f5f5f5;color:#888;"></div>
-    <input type="hidden" id="m_tenant_id">
-    <div class="form-item"><label>抄表月份</label><input id="m_month" type="month"></div>
-    <div class="form-row">
-      <div class="form-item"><label>上月电表（度）</label><input id="m_elec_last" type="number" placeholder="0" inputmode="decimal" oninput="calcMeter()"></div>
-      <div class="form-item"><label>本月电表（度）</label><input id="m_elec_cur" type="number" placeholder="0" inputmode="decimal" oninput="calcMeter()"></div>
-    </div>
-    <div class="form-row">
-      <div class="form-item"><label>上月水表（吨）</label><input id="m_water_last" type="number" placeholder="0" inputmode="decimal" oninput="calcMeter()"></div>
-      <div class="form-item"><label>本月水表（吨）</label><input id="m_water_cur" type="number" placeholder="0" inputmode="decimal" oninput="calcMeter()"></div>
-    </div>
-    <div class="calc-box" id="meterCalcBox">填写表数后自动计算费用预览</div>
-    <button class="btn btn-primary" style="margin-top:12px" onclick="saveMeter()">💾 保存表数</button>
-    <button class="btn btn-gray" onclick="closeModal('meterModal')">取消</button>
-  </div>
-</div>
+    <div class="page active" id="page-home"></div>
+    <div class="page" id="page-tenants"></div>
+    <div class="page" id="page-meter"></div>
+    <div class="page" id="page-bill"></div>
+    <div class="page" id="page-finance"></div>
+    <div class="page" id="page-more"></div>
 
-<!-- 弹窗：支出 -->
-<div class="modal-overlay" id="expenseModal">
-  <div class="modal-box">
-    <div class="modal-handle"></div>
-    <div class="modal-title">🛒 记录支出/采购</div>
-    <input type="hidden" id="ex_id">
-    <div class="form-row">
-      <div class="form-item">
-        <label>支出类型</label>
-        <select id="ex_type">
-          <option value="material">🔧 材料采购</option>
-          <option value="repair">🛠 维修费用</option>
-          <option value="utility">💡 水电公摊</option>
-          <option value="cleaning">🧹 卫生清洁</option>
-          <option value="other">📦 其他支出</option>
-        </select>
-      </div>
-      <div class="form-item"><label>日期</label><input id="ex_date" type="date"></div>
-    </div>
-    <div class="form-item"><label>金额（元）*</label><input id="ex_amount" type="number" placeholder="0.00" inputmode="decimal"></div>
-    <div class="form-item"><label>物品/说明 *</label><input id="ex_desc" placeholder="如：购买水管、灯泡等"></div>
-    <div class="form-item"><label>关联房间（选填）</label><input id="ex_room" placeholder="如 101，公共区域留空"></div>
-    <div class="form-item"><label>备注</label><input id="ex_note" placeholder="补充说明"></div>
-    <button class="btn btn-orange" onclick="saveExpense()">💾 保存支出</button>
-    <button class="btn btn-gray" onclick="closeModal('expenseModal')">取消</button>
-  </div>
-</div>
-
-<!-- 弹窗：账单 -->
-<div class="modal-overlay" id="billModal">
-  <div class="modal-box">
-    <div class="modal-handle"></div>
-    <div id="billModalContent"></div>
-    <button class="btn btn-gray" style="margin-top:4px" onclick="closeModal('billModal')">关闭</button>
-  </div>
-</div>
-
-<!-- 确认弹窗 -->
-<div class="confirm-overlay" id="confirmModal">
-  <div class="confirm-box">
-    <div class="ct" id="confirmTitle">确认操作</div>
-    <div class="cs" id="confirmMsg"></div>
-    <div class="confirm-btns">
-      <button class="btn btn-gray" onclick="closeModal('confirmModal')">取消</button>
-      <button class="btn btn-danger" id="confirmOkBtn">确认</button>
-    </div>
-  </div>
-</div>
-
-<div class="toast" id="toast"></div>
-
-<!-- Firebase SDK -->
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";
-import { getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyBUJeiIHJUnDtNYszLz5HEDUiKaDc8Th3M",
-  authDomain: "xiadong-430.firebaseapp.com",
-  projectId: "xiadong-430",
-  storageBucket: "xiadong-430.firebasestorage.app",
-  messagingSenderId: "1062042458951",
-  appId: "1:1062042458951:web:0b0341fe18cbe01d9cca62"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-// ==================== 本地数据缓存 ====================
-window.localData = {
-  tenants: [],
-  meters: [],
-  bills: [],
-  expenses: [],
-  settings: { elec: 0.6, water: 3.5, note: '请于每月5日前完成缴费，谢谢！' }
-};
-
-function setSyncStatus(status) {
-  const dot = document.getElementById('syncDot');
-  dot.className = 'sync-dot' + (status === 'syncing' ? ' syncing' : status === 'error' ? ' error' : '');
-}
-
-// ==================== 实时监听 Firestore ====================
-function listenCollection(name, localKey) {
-  const q = query(collection(db, name));
-  onSnapshot(q, (snapshot) => {
-    window.localData[localKey] = [];
-    snapshot.forEach(doc => window.localData[localKey].push({ id: doc.id, ...doc.data() }));
-    setSyncStatus('ok');
-    // 刷新当前页面
-    const activePage = document.querySelector('.page.active');
-    if (activePage) {
-      const pageId = activePage.id.replace('page-', '');
-      const renders = { home: renderHome, tenants: renderTenants, meter: renderMeter, bill: renderBill, finance: renderFinance, more: renderMore };
-      if (renders[pageId]) renders[pageId]();
-    }
-  }, () => setSyncStatus('error'));
-}
-
-function listenSettings() {
-  onSnapshot(doc(db, 'meta', 'settings'), (snap) => {
-    if (snap.exists()) window.localData.settings = snap.data();
-  });
-}
-
-// 写入 Firestore
-async function dbSet(collName, id, data) {
-  setSyncStatus('syncing');
-  try {
-    await setDoc(doc(db, collName, id), data);
-    setSyncStatus('ok');
-  } catch(e) { setSyncStatus('error'); toast('❌ 同步失败，请检查网络'); }
-}
-async function dbDel(collName, id) {
-  setSyncStatus('syncing');
-  try {
-    await deleteDoc(doc(db, collName, id));
-    setSyncStatus('ok');
-  } catch(e) { setSyncStatus('error'); }
-}
-async function dbSetSettings(data) {
-  setSyncStatus('syncing');
-  try {
-    await setDoc(doc(db, 'meta', 'settings'), data);
-    setSyncStatus('ok');
-  } catch(e) { setSyncStatus('error'); }
-}
-
-// 暴露给全局
-window.dbSet = dbSet;
-window.dbDel = dbDel;
-window.dbSetSettings = dbSetSettings;
-
-// 启动监听
-listenCollection('tenants', 'tenants');
-listenCollection('meters', 'meters');
-listenCollection('bills', 'bills');
-listenCollection('expenses', 'expenses');
-listenSettings();
-
-// 隐藏加载屏
-setTimeout(() => {
-  document.getElementById('loadingScreen').style.display = 'none';
-  renderHome();
-}, 1800);
-</script>
-
-<script>
-// ==================== 工具函数 ====================
-function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2); }
-function fmt(n){ return parseFloat(n||0).toFixed(2); }
-function nowMonth(){ return new Date().toISOString().slice(0,7); }
-function nowDate(){ return new Date().toISOString().slice(0,10); }
-function monthLabel(m){ if(!m)return''; const[y,mo]=m.split('-'); return y+'年'+parseInt(mo)+'月'; }
-function yearOf(s){ return s?s.slice(0,4):''; }
-function D(){ return window.localData; }
-
-document.getElementById('topDate').textContent = new Date().toLocaleDateString('zh-CN',{year:'numeric',month:'long',day:'numeric',weekday:'long'});
-
-function toast(msg,dur=2200){
-  const el=document.getElementById('toast');
-  el.textContent=msg; el.classList.add('show');
-  setTimeout(()=>el.classList.remove('show'),dur);
-}
-function confirm2(title,msg,onOk){
-  document.getElementById('confirmTitle').textContent=title;
-  document.getElementById('confirmMsg').textContent=msg;
-  document.getElementById('confirmOkBtn').onclick=()=>{ closeModal('confirmModal'); onOk(); };
-  document.getElementById('confirmModal').classList.add('show');
-}
-function showPage(id,el){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-  document.getElementById('page-'+id).classList.add('active');
-  if(el) el.classList.add('active');
-  ({home:renderHome,tenants:renderTenants,meter:renderMeter,bill:renderBill,finance:renderFinance,more:renderMore})[id]?.();
-}
-function openModal(id){ document.getElementById(id).classList.add('show'); }
-function closeModal(id){ document.getElementById(id).classList.remove('show'); }
-
-// ==================== 总览 ====================
-function renderHome(){
-  const pg=document.getElementById('page-home');
-  const active=D().tenants.filter(t=>t.active);
-  const unpaid=D().bills.filter(b=>!b.paid&&!b.debt);
-  const debts=D().bills.filter(b=>b.debt);
-  const totalRent=active.reduce((s,t)=>s+(t.rent||0),0);
-  const month=nowMonth();
-  const thisMonthIncome=D().bills.filter(b=>b.paid&&b.month===month).reduce((s,b)=>s+(b.total||0),0);
-  const thisMonthExp=D().expenses.filter(e=>e.date&&e.date.slice(0,7)===month).reduce((s,e)=>s+(e.amount||0),0);
-
-  const unpaidHTML=unpaid.length?unpaid.map(b=>{
-    const t=D().tenants.find(x=>x.id===b.tenantId);
-    if(!t) return '';
-    return `<div class="list-item">
-      <div class="item-row1"><span class="item-name">${t.name}</span><span class="room-tag">${t.room}室</span></div>
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px">
-        <span class="item-info">${monthLabel(b.month)}</span>
-        <span class="item-amount">¥${fmt(b.total)}</span>
-      </div>
-      <div class="btn-row">
-        <button class="btn btn-success btn-sm" onclick="markPaid('${b.id}')">✅ 已缴</button>
-        <button class="btn btn-outline btn-sm" onclick="previewBill('${b.tenantId}','${b.month}')">查看</button>
-      </div>
-    </div>`;
-  }).join(''):'<div class="empty"><div class="ei">🎉</div>暂无待缴账单</div>';
-
-  const debtHTML=debts.length?`<div class="section-label">⚠️ 欠款追踪（${debts.length}条）</div>`+debts.map(b=>{
-    const t=D().tenants.find(x=>x.id===b.tenantId);
-    if(!t) return '';
-    return `<div class="list-item" style="border-left:3px solid #ea4335">
-      <div class="item-row1"><span class="item-name">${t.name}</span><span class="badge badge-red">欠款</span></div>
-      <div class="item-info">${monthLabel(b.month)} · 欠 ¥${fmt(b.debtAmount||b.total)}</div>
-      <div class="btn-row">
-        <button class="btn btn-success btn-sm" onclick="markPaid('${b.id}')">✅ 已还清</button>
-      </div>
-    </div>`;
-  }).join(''):'';
-
-  pg.innerHTML=`
-    <div class="stats-grid">
-      <div class="stat-card"><div class="stat-num">${active.length}</div><div class="stat-label">在租房间</div></div>
-      <div class="stat-card"><div class="stat-num">¥${fmt(totalRent)}</div><div class="stat-label">月租合计</div></div>
-      <div class="stat-card"><div class="stat-num green">¥${fmt(thisMonthIncome)}</div><div class="stat-label">本月已收</div></div>
-      <div class="stat-card"><div class="stat-num orange">¥${fmt(thisMonthExp)}</div><div class="stat-label">本月支出</div></div>
-    </div>
-    ${debtHTML}
-    <div class="section-label">📋 待缴账单</div>
-    ${unpaidHTML}
-    <div class="section-label">🚀 快捷操作</div>
-    <div class="card">
-      <button class="btn btn-primary" onclick="openTenantModal()">➕ 添加租客</button>
-      <button class="btn btn-orange" onclick="openExpenseModal()">🛒 记录采购/支出</button>
-      <button class="btn btn-outline" onclick="showPage('meter',document.querySelectorAll('.nav-item')[2])">⚡ 去抄表</button>
-      <button class="btn btn-success" onclick="showPage('bill',document.querySelectorAll('.nav-item')[3])">🧾 生成账单</button>
-    </div>`;
-}
-
-// ==================== 租客管理 ====================
-function renderTenants(){
-  const pg=document.getElementById('page-tenants');
-  const active=D().tenants.filter(t=>t.active);
-  const inactive=D().tenants.filter(t=>!t.active);
-  const dsLabel={held:'<span class="badge badge-green">已收</span>',bad:'<span class="badge badge-red">坏账</span>',returned:'<span class="badge badge-gray">已退</span>'};
-
-  const renderItem=t=>`<div class="list-item">
-    <div class="item-row1"><span class="item-name">${t.name}</span><span class="room-tag">${t.room}室</span></div>
-    <div class="item-info">
-      ${t.phone?'📞 '+t.phone+'<br>':''}
-      💰 月租 <b>¥${fmt(t.rent)}</b> &nbsp;|&nbsp; 押金 ¥${fmt(t.deposit)} ${dsLabel[t.depositStatus||'held']||''}<br>
-      🧹 卫生 ¥${fmt(t.clean)}/月 &nbsp;|&nbsp; 📶 网费 ¥${fmt(t.net)}/月
-      ${t.note?'<br>📝 '+t.note:''}
-    </div>
-    <div class="btn-row">
-      <button class="btn btn-outline btn-sm" onclick="openTenantModal('${t.id}')">✏️ 编辑</button>
-      <button class="btn btn-primary btn-sm" onclick="openMeterModal('${t.id}')">⚡ 抄表</button>
-      <button class="btn btn-danger btn-sm" onclick="toggleTenant('${t.id}')">${t.active?'退租':'恢复'}</button>
-    </div>
-  </div>`;
-
-  pg.innerHTML=`
-    <button class="btn btn-primary" onclick="openTenantModal()">➕ 添加新租客</button>
-    <div class="section-label">在租（${active.length}人）</div>
-    ${active.length?active.map(renderItem).join(''):'<div class="empty"><div class="ei">🏠</div>暂无在租租客</div>'}
-    ${inactive.length?`<div class="section-label">已退租（${inactive.length}人）</div>${inactive.map(renderItem).join('')}`:''}`;
-}
-
-function openTenantModal(id){
-  const fields=['id','name','room','phone','checkin','rent','deposit','depositStatus','clean','net','note'];
-  if(id){
-    const t=D().tenants.find(x=>x.id===id);
-    if(!t) return;
-    fields.forEach(k=>{ const el=document.getElementById('e_'+k); if(el) el.value=t[k]||''; });
-    document.getElementById('tenantModalTitle').textContent='编辑租客';
-  } else {
-    fields.forEach(k=>{ const el=document.getElementById('e_'+k); if(el) el.value=''; });
-    document.getElementById('e_checkin').value=nowDate();
-    document.getElementById('e_depositStatus').value='held';
-    document.getElementById('tenantModalTitle').textContent='添加租客';
-  }
-  openModal('tenantModal');
-}
-
-async function saveTenant(){
-  const name=document.getElementById('e_name').value.trim();
-  const room=document.getElementById('e_room').value.trim();
-  if(!name||!room){ toast('⚠️ 姓名和房间号必填'); return; }
-  const id=document.getElementById('e_id').value||uid();
-  const obj={
-    id, name, room, active: true,
-    phone:document.getElementById('e_phone').value,
-    checkin:document.getElementById('e_checkin').value,
-    rent:parseFloat(document.getElementById('e_rent').value)||0,
-    deposit:parseFloat(document.getElementById('e_deposit').value)||0,
-    depositStatus:document.getElementById('e_depositStatus').value||'held',
-    clean:parseFloat(document.getElementById('e_clean').value)||0,
-    net:parseFloat(document.getElementById('e_net').value)||0,
-    note:document.getElementById('e_note').value,
-    updatedAt: new Date().toISOString()
-  };
-  // 保留 active 状态（编辑时不强制覆盖）
-  const existing=D().tenants.find(x=>x.id===id);
-  if(existing) obj.active=existing.active;
-  await window.dbSet('tenants', id, obj);
-  closeModal('tenantModal'); toast('✅ 保存成功');
-}
-
-async function toggleTenant(id){
-  const t=D().tenants.find(x=>x.id===id);
-  if(!t) return;
-  confirm2('确认'+(t.active?'退租':'恢复'), `确认将 ${t.name}（${t.room}室）${t.active?'退租':'恢复入住'}？`, async()=>{
-    await window.dbSet('tenants', id, {...t, active:!t.active});
-    toast(t.active?'已标记退租':'已恢复入住');
-  });
-}
-
-// ==================== 抄表 ====================
-function renderMeter(){
-  const pg=document.getElementById('page-meter');
-  const active=D().tenants.filter(t=>t.active);
-  const month=nowMonth();
-  const notDone=active.filter(t=>!D().meters.find(m=>m.tenantId===t.id&&m.month===month)).length;
-
-  const items=active.map(t=>{
-    const m=D().meters.find(x=>x.tenantId===t.id&&x.month===month);
-    const eu=m?Math.max(0,m.elecCur-m.elecLast):null;
-    const wu=m?Math.max(0,m.waterCur-m.waterLast):null;
-    const ef=eu!==null?eu*D().settings.elec:0;
-    const wf=wu!==null?wu*D().settings.water:0;
-    return `<div class="list-item">
-      <div class="item-row1"><span class="item-name">${t.name}</span><span class="room-tag">${t.room}室</span></div>
-      <div class="item-info">
-        ${m?`⚡ 用电：<b>${eu}度</b> ¥${fmt(ef)} &nbsp;|&nbsp; 💧 用水：<b>${wu}吨</b> ¥${fmt(wf)}`
-        :'<span style="color:#f97316">⚠️ 本月未抄表</span>'}
-      </div>
-      <div class="btn-row">
-        <button class="btn btn-primary btn-sm" onclick="openMeterModal('${t.id}')">${m?'✏️ 修改':'📝 录入'}</button>
-        ${m?`<button class="btn btn-danger btn-sm" onclick="deleteMeter('${m.id}')">🗑 删除</button>`:''}
-      </div>
-    </div>`;
-  }).join('');
-
-  const history=[...D().meters].sort((a,b)=>b.month.localeCompare(a.month)).slice(0,20).map(m=>{
-    const t=D().tenants.find(x=>x.id===m.tenantId);
-    const eu=Math.max(0,m.elecCur-m.elecLast), wu=Math.max(0,m.waterCur-m.waterLast);
-    return `<div class="list-item">
-      <div class="item-row1">
-        <span style="font-size:13px;font-weight:600">${t?t.name:'已删除'} ${t?t.room+'室':''}</span>
-        <span class="badge badge-blue">${monthLabel(m.month)}</span>
-      </div>
-      <div class="item-info">⚡ ${m.elecLast}→${m.elecCur}度（用${eu}度）&nbsp; 💧 ${m.waterLast}→${m.waterCur}吨（用${wu}吨）</div>
-    </div>`;
-  }).join('');
-
-  pg.innerHTML=`
-    ${notDone>0?`<div class="warn-box">⚠️ 还有 <b>${notDone}</b> 个房间未完成本月抄表</div>`:'<div class="calc-box">✅ 本月所有房间已完成抄表</div>'}
-    <div class="section-label">本月抄表（${monthLabel(month)}）</div>
-    ${items||'<div class="empty"><div class="ei">👥</div>暂无在租租客</div>'}
-    <div class="section-label">历史记录</div>
-    ${history||'<div class="empty">暂无记录</div>'}`;
-}
-
-function openMeterModal(tenantId){
-  const t=D().tenants.find(x=>x.id===tenantId);
-  if(!t) return;
-  document.getElementById('m_tenant_id').value=tenantId;
-  document.getElementById('m_tenant_name').value=t.name+' - '+t.room+'室';
-  document.getElementById('m_month').value=nowMonth();
-  const prev=D().meters.filter(x=>x.tenantId===tenantId).sort((a,b)=>b.month.localeCompare(a.month))[0];
-  const cur=D().meters.find(x=>x.tenantId===tenantId&&x.month===nowMonth());
-  document.getElementById('m_elec_last').value=cur?cur.elecLast:(prev?prev.elecCur:'');
-  document.getElementById('m_elec_cur').value=cur?cur.elecCur:'';
-  document.getElementById('m_water_last').value=cur?cur.waterLast:(prev?prev.waterCur:'');
-  document.getElementById('m_water_cur').value=cur?cur.waterCur:'';
-  calcMeter();
-  openModal('meterModal');
-}
-
-function calcMeter(){
-  const eu=Math.max(0,parseFloat(document.getElementById('m_elec_cur').value||0)-parseFloat(document.getElementById('m_elec_last').value||0));
-  const wu=Math.max(0,parseFloat(document.getElementById('m_water_cur').value||0)-parseFloat(document.getElementById('m_water_last').value||0));
-  const ep=D().settings.elec, wp=D().settings.water;
-  document.getElementById('meterCalcBox').innerHTML=
-    `⚡ 用电：<b>${eu}度</b> × ¥${ep} = <b>¥${fmt(eu*ep)}</b><br>
-     💧 用水：<b>${wu}吨</b> × ¥${wp} = <b>¥${fmt(wu*wp)}</b>`;
-}
-
-async function saveMeter(){
-  const tid=document.getElementById('m_tenant_id').value;
-  const month=document.getElementById('m_month').value;
-  if(!tid||!month){ toast('⚠️ 请选择月份'); return; }
-  const existing=D().meters.find(m=>m.tenantId===tid&&m.month===month);
-  const id=existing?existing.id:uid();
-  const record={
-    id, tenantId:tid, month,
-    elecLast:parseFloat(document.getElementById('m_elec_last').value)||0,
-    elecCur:parseFloat(document.getElementById('m_elec_cur').value)||0,
-    waterLast:parseFloat(document.getElementById('m_water_last').value)||0,
-    waterCur:parseFloat(document.getElementById('m_water_cur').value)||0,
-    updatedAt:new Date().toISOString()
-  };
-  await window.dbSet('meters', id, record);
-  closeModal('meterModal'); toast('✅ 表数已保存');
-}
-
-async function deleteMeter(id){
-  confirm2('删除记录','确认删除此抄表记录？', async()=>{
-    await window.dbDel('meters', id); toast('已删除');
-  });
-}
-
-// ==================== 账单 ====================
-function buildBillData(tenant, month){
-  const meter=D().meters.find(m=>m.tenantId===tenant.id&&m.month===month);
-  const ep=D().settings.elec, wp=D().settings.water;
-  const eu=meter?Math.max(0,meter.elecCur-meter.elecLast):0;
-  const wu=meter?Math.max(0,meter.waterCur-meter.waterLast):0;
-  const ef=eu*ep, wf=wu*wp;
-  const total=tenant.rent+ef+wf+tenant.clean+tenant.net;
-  return {tenant,month,meter,eu,wu,ef,wf,total,ep,wp};
-}
-
-function billHTML(bd){
-  const{tenant:t,month,eu,wu,ef,wf,total,ep,wp}=bd;
-  return`<div class="bill-header">
-    <div class="title">🏠 租金账单</div>
-    <div class="sub">${monthLabel(month)} &nbsp;|&nbsp; ${t.room}室 &nbsp;|&nbsp; ${t.name}</div>
-  </div>
-  ${t.phone?`<div class="bill-line"><span class="key">📞 联系电话</span><span class="val">${t.phone}</span></div>`:''}
-  <div class="bill-line"><span class="key">🏠 月租金</span><span class="val">¥${fmt(t.rent)}</span></div>
-  <div class="bill-line"><span class="key">⚡ 电费（${eu}度×¥${ep}）</span><span class="val">¥${fmt(ef)}</span></div>
-  <div class="bill-line"><span class="key">💧 水费（${wu}吨×¥${wp}）</span><span class="val">¥${fmt(wf)}</span></div>
-  <div class="bill-line"><span class="key">🧹 卫生费</span><span class="val">¥${fmt(t.clean)}</span></div>
-  <div class="bill-line"><span class="key">📶 网费</span><span class="val">¥${fmt(t.net)}</span></div>
-  <div class="bill-total-line"><span>合计应缴</span><span>¥${fmt(total)}</span></div>
-  <div class="bill-note">${D().settings.note||''}</div>`;
-}
-
-function billText(bd){
-  const{tenant:t,month,eu,wu,ef,wf,total,ep,wp}=bd;
-  return`【租金账单】
-房间：${t.room}室 | 租客：${t.name}
-账单月份：${monthLabel(month)}
-————————————
-月租金：¥${fmt(t.rent)}
-电费：${eu}度×¥${ep}=¥${fmt(ef)}
-水费：${wu}吨×¥${wp}=¥${fmt(wf)}
-卫生费：¥${fmt(t.clean)}
-网费：¥${fmt(t.net)}
-————————————
-合计应缴：¥${fmt(total)}
-${D().settings.note||''}`;
-}
-
-function renderBill(){
-  const pg=document.getElementById('page-bill');
-  const month=nowMonth();
-  const active=D().tenants.filter(t=>t.active);
-  const allBills=[...D().bills].sort((a,b)=>b.month.localeCompare(a.month));
-
-  const items=active.map(t=>{
-    const bd=buildBillData(t,month);
-    const existing=D().bills.find(b=>b.tenantId===t.id&&b.month===month);
-    const hasMeter=!!D().meters.find(m=>m.tenantId===t.id&&m.month===month);
-    return`<div class="list-item">
-      <div class="item-row1"><span class="item-name">${t.name}</span><span class="room-tag">${t.room}室</span></div>
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:5px">
-        <div class="item-info">
-          ${hasMeter?'<span class="badge badge-green">已抄表</span>':'<span class="badge badge-yellow">未抄表</span>'}
-          ${existing?`<span class="badge ${existing.paid?'badge-green':'badge-red'}">${existing.paid?'已缴':'待缴'}</span>`:''}
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="showPage('home',this)">
+            <div class="icon">📊</div>
+            <div>总览</div>
         </div>
-        <div class="item-amount">¥${fmt(bd.total)}</div>
-      </div>
-      <div class="btn-row">
-        <button class="btn btn-outline btn-sm" onclick="previewBill('${t.id}','${month}')">👁 预览</button>
-        <button class="btn btn-primary btn-sm" onclick="saveBillRecord('${t.id}','${month}')">💾 保存</button>
-        <button class="btn btn-success btn-sm" onclick="copyBillText('${t.id}','${month}')">📋 复制</button>
-      </div>
-    </div>`;
-  }).join('');
-
-  const historyHTML=allBills.length?allBills.map(b=>{
-    const t=D().tenants.find(x=>x.id===b.tenantId);
-    return`<div class="list-item">
-      <div class="item-row1">
-        <span style="font-size:13px;font-weight:600">${t?t.name:'已删除'} ${t?t.room+'室':''}</span>
-        <span class="badge badge-blue">${monthLabel(b.month)}</span>
-      </div>
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px">
-        <span class="badge ${b.paid?'badge-green':b.debt?'badge-red':'badge-yellow'}">${b.paid?'已缴':b.debt?'欠款':'待缴'}</span>
-        <span style="font-weight:700;font-size:15px">¥${fmt(b.total)}</span>
-      </div>
-      <div class="btn-row">
-        <button class="btn btn-outline btn-sm" onclick="previewBill('${b.tenantId}','${b.month}')">查看</button>
-        ${!b.paid?`<button class="btn btn-success btn-sm" onclick="markPaid('${b.id}')">✅已缴</button>`:''}
-        ${b.paid?`<button class="btn btn-gray btn-sm" onclick="markUnpaid('${b.id}')">撤销</button>`:''}
-        <button class="btn btn-danger btn-sm" onclick="deleteBill('${b.id}')">🗑</button>
-      </div>
-    </div>`;
-  }).join(''):'<div class="empty">暂无账单记录</div>';
-
-  pg.innerHTML=`
-    <div class="section-label">本月账单（${monthLabel(month)}）</div>
-    <button class="btn btn-success" onclick="batchSaveBills('${month}')">📦 批量保存本月全部账单</button>
-    ${items||'<div class="empty"><div class="ei">👥</div>暂无在租租客</div>'}
-    <div class="section-label" style="margin-top:16px">历史账单</div>
-    ${historyHTML}`;
-}
-
-function previewBill(tenantId,month){
-  const t=D().tenants.find(x=>x.id===tenantId);
-  if(!t) return;
-  const bd=buildBillData(t,month);
-  document.getElementById('billModalContent').innerHTML=`
-    <div class="bill-card">${billHTML(bd)}</div>
-    <button class="btn btn-success" onclick="copyBillText('${tenantId}','${month}');closeModal('billModal')">📋 复制发给租客</button>
-    <button class="btn btn-primary" onclick="saveBillRecord('${tenantId}','${month}')">💾 保存账单</button>`;
-  openModal('billModal');
-}
-
-async function saveBillRecord(tenantId,month){
-  const t=D().tenants.find(x=>x.id===tenantId);
-  if(!t) return;
-  const bd=buildBillData(t,month);
-  const existing=D().bills.find(b=>b.tenantId===tenantId&&b.month===month);
-  const id=existing?existing.id:uid();
-  const bill={id,tenantId,month,total:bd.total,
-    paid:existing?existing.paid:false,
-    debt:existing?existing.debt:false,
-    debtAmount:existing?existing.debtAmount:0,
-    createdAt:existing?existing.createdAt:new Date().toISOString()};
-  await window.dbSet('bills', id, bill);
-  toast('✅ 账单已保存');
-}
-
-async function batchSaveBills(month){
-  const active=D().tenants.filter(t=>t.active);
-  for(const t of active) await saveBillRecord(t.id,month);
-  toast(`✅ 已生成 ${active.length} 张账单`);
-}
-
-function copyBillText(tenantId,month){
-  const t=D().tenants.find(x=>x.id===tenantId);
-  if(!t) return;
-  const bd=buildBillData(t,month);
-  const text=billText(bd);
-  if(navigator.clipboard){ navigator.clipboard.writeText(text).then(()=>toast('✅ 已复制，可直接发给租客！')); }
-  else{ const ta=document.createElement('textarea'); ta.value=text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); toast('✅ 已复制！'); }
-}
-
-async function markPaid(id){
-  const b=D().bills.find(x=>x.id===id);
-  if(b){ await window.dbSet('bills',id,{...b,paid:true,debt:false,paidAt:new Date().toISOString()}); toast('✅ 已标记缴费'); }
-}
-async function markUnpaid(id){
-  const b=D().bills.find(x=>x.id===id);
-  if(b){ await window.dbSet('bills',id,{...b,paid:false}); toast('已撤销'); }
-}
-async function deleteBill(id){
-  confirm2('删除账单','确认删除此账单？',async()=>{ await window.dbDel('bills',id); toast('已删除'); });
-}
-
-// ==================== 支出/采购 ====================
-function openExpenseModal(id){
-  if(id){
-    const e=D().expenses.find(x=>x.id===id);
-    if(!e) return;
-    ['id','type','date','amount','desc','room','note'].forEach(k=>{ const el=document.getElementById('ex_'+k); if(el) el.value=e[k]||''; });
-  } else {
-    ['id','amount','desc','room','note'].forEach(k=>{ const el=document.getElementById('ex_'+k); if(el) el.value=''; });
-    document.getElementById('ex_type').value='material';
-    document.getElementById('ex_date').value=nowDate();
-  }
-  openModal('expenseModal');
-}
-
-async function saveExpense(){
-  const amount=parseFloat(document.getElementById('ex_amount').value)||0;
-  const desc=document.getElementById('ex_desc').value.trim();
-  if(!amount||!desc){ toast('⚠️ 金额和说明必填'); return; }
-  const id=document.getElementById('ex_id').value||uid();
-  const obj={
-    id, amount, desc,
-    type:document.getElementById('ex_type').value,
-    date:document.getElementById('ex_date').value,
-    room:document.getElementById('ex_room').value,
-    note:document.getElementById('ex_note').value,
-    createdAt:new Date().toISOString()
-  };
-  await window.dbSet('expenses',id,obj);
-  closeModal('expenseModal'); toast('✅ 支出已记录');
-}
-
-// ==================== 财务中心 ====================
-let finYear=new Date().getFullYear();
-let finTab='overview';
-
-function renderFinance(){
-  const pg=document.getElementById('page-finance');
-  pg.innerHTML=`
-    <div class="year-selector">
-      <button onclick="finYear--;renderFinContent()">◀</button>
-      <span>${finYear}年</span>
-      <button onclick="finYear++;renderFinContent()">▶</button>
+        <div class="nav-item" onclick="showPage('tenants',this)">
+            <div class="icon">👥</div>
+            <div>租客</div>
+        </div>
+        <div class="nav-item" onclick="showPage('meter',this)">
+            <div class="icon">⚡</div>
+            <div>抄表</div>
+        </div>
+        <div class="nav-item" onclick="showPage('bill',this)">
+            <div class="icon">🧾</div>
+            <div>账单</div>
+        </div>
+        <div class="nav-item" onclick="showPage('finance',this)">
+            <div class="icon">💰</div>
+            <div>财务</div>
+        </div>
+        <div class="nav-item" onclick="showPage('more',this)">
+            <div class="icon">⚙️</div>
+            <div>更多</div>
+        </div>
     </div>
-    <div class="tab-bar">
-      <div class="tab-btn ${finTab==='overview'?'active':''}" onclick="finTab='overview';renderFinContent()">年度总览</div>
-      <div class="tab-btn ${finTab==='expense'?'active':''}" onclick="finTab='expense';renderFinContent()">支出/采购</div>
+
+    <!-- 弹窗：租客 -->
+    <div class="modal-overlay" id="tenantModal">
+        <div class="modal-box">
+            <div class="modal-handle"></div>
+            <div class="modal-title" id="tenantModalTitle">添加租客</div>
+            <input type="hidden" id="e_id">
+            <div class="form-row">
+                <div class="form-item">
+                    <label>姓名 *</label>
+                    <input id="e_name" placeholder="租客姓名">
+                </div>
+                <div class="form-item">
+                    <label>房间号 *</label>
+                    <input id="e_room" placeholder="如 101">
+                </div>
+            </div>
+            <div class="form-item">
+                <label>联系电话</label>
+                <input id="e_phone" type="tel" placeholder="手机号码">
+            </div>
+            <div class="form-item">
+                <label>入住日期</label>
+                <input id="e_checkin" type="date">
+            </div>
+            <div class="form-row">
+                <div class="form-item">
+                    <label>月租金（元）</label>
+                    <input id="e_rent" type="number" placeholder="0" inputmode="decimal">
+                </div>
+                <div class="form-item">
+                    <label>押金（元）</label>
+                    <input id="e_deposit" type="number" placeholder="0" inputmode="decimal">
+                </div>
+            </div>
+            <div class="form-item">
+                <label>押金状态</label>
+                <select id="e_depositStatus">
+                    <option value="held">已收（在手）</option>
+                    <option value="bad">未收（坏账）</option>
+                    <option value="returned">已退还</option>
+                </select>
+            </div>
+            <div class="form-row">
+                <div class="form-item">
+                    <label>卫生费/月</label>
+                    <input id="e_clean" type="number" placeholder="0" inputmode="decimal">
+                </div>
+                <div class="form-item">
+                    <label>网费/月</label>
+                    <input id="e_net" type="number" placeholder="0" inputmode="decimal">
+                </div>
+            </div>
+            <div class="form-item">
+                <label>备注</label>
+                <input id="e_note" placeholder="备注信息">
+            </div>
+            <button class="btn btn-primary" onclick="saveTenant()">💾 保存</button>
+            <button class="btn btn-gray" onclick="closeModal('tenantModal')">取消</button>
+        </div>
     </div>
-    <div id="finContent"></div>`;
-  renderFinContent();
-}
 
-function renderFinContent(){
-  document.querySelectorAll('.tab-btn').forEach((b,i)=>{
-    b.classList.toggle('active',['overview','expense'][i]===finTab);
-  });
-  const el=document.getElementById('finContent');
-  if(!el) return;
-  const y=finYear.toString();
-  if(finTab==='overview') el.innerHTML=renderOverview(y);
-  else el.innerHTML=renderExpenseTab(y);
-}
-
-function renderOverview(y){
-  const income=D().bills.filter(b=>b.paid&&yearOf(b.month)===y).reduce((s,b)=>s+(b.total||0),0);
-  const expense=D().expenses.filter(e=>yearOf(e.date)===y).reduce((s,e)=>s+(e.amount||0),0);
-  const debtAmt=D().bills.filter(b=>b.debt&&yearOf(b.month)===y).reduce((s,b)=>s+(b.debtAmount||b.total||0),0);
-  const net=income-expense;
-
-  const months=Array.from({length:12},(_,i)=>{
-    const m=y+'-'+(i+1).toString().padStart(2,'0');
-    const inc=D().bills.filter(b=>b.paid&&b.month===m).reduce((s,b)=>s+(b.total||0),0);
-    const exp=D().expenses.filter(e=>e.date&&e.date.slice(0,7)===m).reduce((s,e)=>s+(e.amount||0),0);
-    return{label:(i+1)+'月',inc,exp};
-  });
-  const maxVal=Math.max(...months.map(m=>Math.max(m.inc,m.exp)),1);
-
-  const chartBars=months.map(m=>`
-    <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px">
-      <div style="width:100%;display:flex;flex-direction:column;justify-content:flex-end;height:70px;gap:1px">
-        <div style="width:100%;background:#1a73e8;border-radius:2px 2px 0 0;height:${Math.round(m.inc/maxVal*65)}px;opacity:0.85"></div>
-        <div style="width:100%;background:#ea4335;border-radius:2px 2px 0 0;height:${Math.round(m.exp/maxVal*65)}px;opacity:0.7"></div>
-      </div>
-      <div style="font-size:9px;color:#999">${m.label}</div>
-    </div>`).join('');
-
-  return`
-    <div class="stats-grid">
-      <div class="stat-card"><div class="stat-num green">¥${fmt(income)}</div><div class="stat-label">${y}年总收入</div></div>
-      <div class="stat-card"><div class="stat-num orange">¥${fmt(expense)}</div><div class="stat-label">${y}年总支出</div></div>
-      <div class="stat-card"><div class="stat-num red">¥${fmt(debtAmt)}</div><div class="stat-label">欠款金额</div></div>
-      <div class="stat-card"><div class="stat-num ${net>=0?'green':'red'}">¥${fmt(net)}</div><div class="stat-label">净利润</div></div>
+    <!-- 弹窗：抄表 -->
+    <div class="modal-overlay" id="meterModal">
+        <div class="modal-box">
+            <div class="modal-handle"></div>
+            <div class="modal-title">⚡ 录入表数</div>
+            <div class="form-item">
+                <label>租客</label>
+                <input id="m_tenant_name" readonly style="background:#f5f5f5;color:#888;">
+            </div>
+            <input type="hidden" id="m_tenant_id">
+            <div class="form-item">
+                <label>抄表月份</label>
+                <input id="m_month" type="month">
+            </div>
+            <div class="form-row">
+                <div class="form-item">
+                    <label>上月电表（度）</label>
+                    <input id="m_elec_last" type="number" placeholder="0" inputmode="decimal" oninput="calcMeter()">
+                </div>
+                <div class="form-item">
+                    <label>本月电表（度）</label>
+                    <input id="m_elec_cur" type="number" placeholder="0" inputmode="decimal" oninput="calcMeter()">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-item">
+                    <label>上月水表（吨）</label>
+                    <input id="m_water_last" type="number" placeholder="0" inputmode="decimal" oninput="calcMeter()">
+                </div>
+                <div class="form-item">
+                    <label>本月水表（吨）</label>
+                    <input id="m_water_cur" type="number" placeholder="0" inputmode="decimal" oninput="calcMeter()">
+                </div>
+            </div>
+            <div class="calc-box" id="meterCalcBox">填写表数后自动计算费用预览</div>
+            <button class="btn btn-primary" style="margin-top:12px;" onclick="saveMeter()">💾 保存表数</button>
+            <button class="btn btn-gray" onclick="closeModal('meterModal')">取消</button>
+        </div>
     </div>
-    <div class="card">
-      <div class="card-title">📈 月度收支</div>
-      <div style="display:flex;gap:3px">${chartBars}</div>
-      <div style="display:flex;gap:12px;margin-top:8px;font-size:11px">
-        <span><span style="display:inline-block;width:10px;height:10px;background:#1a73e8;border-radius:2px;margin-right:3px"></span>收入</span>
-        <span><span style
+
+    <!-- 弹窗：支出 -->
+    <div class="modal-overlay" id="expenseModal">
+        <div class="modal-box">
+            <div class="modal-handle"></div>
+            <div class="modal-title">🛒 记录支出/采购</div>
+            <input type="hidden" id="ex_id">
+            <div class="form-row">
+                <div class="form-item">
+                    <label>支出类型</label>
+                    <select id="ex_type">
+                        <option value="material">🔧 材料采购</option>
+                        <option value="repair">🛠 维修费用</option>
+                        <option value="utility">💡 水电公摊</option>
+                        <option value="cleaning">🧹 卫生清洁</option>
+                        <option value="other">📦 其他支出</option>
+                    </select>
+                </div>
+                <div class="form-item">
+                    <label>日期</label>
+                    <input id="ex_date" type="date">
+                </div>
+            </div>
+            <div class="form-item">
+                <label>金额（元）*</label>
+                <input id="ex_amount" type="number" placeholder="0.00" inputmode="decimal">
+            </div>
+            <div class="form-item">
+                <label>物品/说明 *</label>
+                <input id="ex_desc" placeholder="如：购买水管、灯泡等">
+            </div>
+            <div class="form-item">
+                <label>关联房间（选填）</label>
+                <input id="ex_room" placeholder="如 101，公共区域留空">
+            </div>
+            <div class="form-item">
+                <label>备注</label>
+                <input id="ex_note" placeholder="补充说明">
+            </div>
+            <button class="btn btn-orange" onclick="saveExpense()">💾 保存支出</button>
+            <button class="btn btn-gray" onclick="closeModal('expenseModal')">取消</button>
+        </div>
+    </div>
+
+    <!-- 弹窗：账单 -->
+    <div class="modal-overlay" id="billModal">
+        <div class="modal-box">
+            <div class="modal-handle"></div>
+            <div id="billModalContent"></div>
+            <button class="btn btn-gray" style="margin-top:4px;" onclick="closeModal('billModal')">关闭</button>
+        </div>
+    </div>
+
+    <!-- 确认弹窗 -->
+    <div class="confirm-overlay" id="confirmModal">
+        <div class="confirm-box">
+            <div class="ct" id="confirmTitle">确认操作</div>
+            <div class="cs" id="confirmMsg"></div>
+            <div class="confirm-btns">
+                <button class="btn btn-gray" onclick="closeModal('confirmModal')">取消</button>
+                <button class="btn btn-danger" id="confirmOkBtn">确认</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";
+        import { getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBUJeiIHJUnDtNYszLz5HEDUiKaDc8Th3M",
+            authDomain: "xiadong-430.firebaseapp.com",
+            projectId: "xiadong-430",
+            storageBucket: "xiadong-430.firebasestorage.app",
+            messagingSenderId: "1062042458951",
+            appId: "1:1062042458951:web:0b0341fe18cbe01d9cca62"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // ==================== 本地数据缓存 ====================
+        window.localData = {
+            tenants: [],
+            meters: [],
+            bills: [],
+            expenses: [],
+            settings: {
+                elec: 1.5,
+                water: 5.0,
+                note: '请于每月 5 日前完成缴费，谢谢！'
+            }
+        };
+
+        function setSyncStatus(status) {
+            const dot = document.getElementById('syncDot');
+            dot.className = 'sync-dot' + (status === 'syncing' ? ' syncing' : status === 'error' ? ' error' : '');
+        }
+
+        // ==================== 实时监听 Firestore ====================
+        function listenCollection(name, localKey) {
+            const q = query(collection(db, name));
+            onSnapshot(q, (snapshot) => {
+                window.localData[localKey] = [];
+                snapshot.forEach(doc => window.localData[localKey].push({ id: doc.id, ...doc.data() }));
+                setSyncStatus('ok');
+                const activePage = document.querySelector('.page.active');
+                if (activePage) {
+                    const pageId = activePage.id.replace('page-', '');
+                    const renders = { home: renderHome, tenants: renderTenants, meter: renderMeter, bill: renderBill, finance: renderFinance, more: renderMore };
+                    if (renders[pageId]) renders[pageId]();
+                }
+            }, () => setSyncStatus('error'));
+        }
+
+        function listenSettings() {
+            onSnapshot(doc(db, 'meta', 'settings'), (snap) => {
+                if (snap.exists()) window.localData.settings = snap.data();
+            });
+        }
+
+        async function dbSet(collName, id, data) {
+            setSyncStatus('syncing');
+            try {
+                await setDoc(doc(db, collName, id), data);
+                setSyncStatus('ok');
+            } catch(e) {
+                setSyncStatus('error');
+                toast('❌ 同步失败，请检查网络');
+            }
+        }
+
+        async function dbDel(collName, id) {
+            setSyncStatus('syncing');
+            try {
+                await deleteDoc(doc(db, collName, id));
+                setSyncStatus('ok');
+            } catch(e) {
+                setSyncStatus('error');
+            }
+        }
+
+        async function dbSetSettings(data) {
+            setSyncStatus('syncing');
+            try {
+                await setDoc(doc(db, 'meta', 'settings'), data);
+                setSyncStatus('ok');
+            } catch(e) {
+                setSyncStatus('error');
+            }
+        }
+
+        window.dbSet = dbSet;
+        window.dbDel = dbDel;
+        window.dbSetSettings = dbSetSettings;
+
+        listenCollection('tenants', 'tenants');
+        listenCollection('meters', 'meters');
+        listenCollection('bills', 'bills');
+        listenCollection('expenses', 'expenses');
+        listenSettings();
+
+        setTimeout(() => {
+            document.getElementById('loadingScreen').style.display = 'none';
+            renderHome();
+        }, 1800);
+    </script>
+
+    <script>
+        // ==================== 工具函数 ====================
+        function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2); }
+        function fmt(n) { return parseFloat(n||0).toFixed(2); }
+        function nowMonth() { return new Date().toISOString().slice(0, 7); }
+        function nowDate() { return new Date().toISOString().slice(0, 10); }
+        function monthLabel(m) { if(!m) return ''; const [y,mo] = m.split('-'); return y + '年' + parseInt(mo) + '月'; }
+        function yearOf(s) { return s ? s.slice(0, 4) : ''; }
+        function D() { return window.localData; }
+
+        document.getElementById('topDate').textContent = new Date().toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+
+        function toast(msg, dur=2200) {
+            const el = document.getElementById('toast');
+            el.textContent = msg;
+            el.classList.add('show');
+            setTimeout(() => el.classList.remove('show'), dur);
+        }
+
+        function confirm2(title, msg, onOk) {
+            document.getElementById('confirmTitle').textContent = title;
+            document.getElementById('confirmMsg').textContent = msg;
+            document.getElementById('confirmOkBtn').onclick = () => { closeModal('confirmModal'); onOk(); };
+            document.getElementById('confirmModal').classList.add('show');
+        }
+
+        function showPage(id, el) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById('page-' + id).classList.add('active');
+            if (el) el.classList.add('active');
+            const renders = { home: renderHome, tenants: renderTenants, meter: renderMeter, bill: renderBill, finance: renderFinance, more: renderMore };
+            if (renders[id]) renders[id]();
+        }
+
+        function openModal(id) { document.getElementById(id).classList.add('show'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+
+        // ==================== 总览 ====================
+        function renderHome() {
+            const pg = document.getElementById('page-home');
+            const active = D().tenants.filter(t => t.active);
+            const unpaid = D().bills.filter(b => !b.paid && !b.debt);
+            const debts = D().bills.filter(b => b.debt);
+            const totalRent = active.reduce((s, t) => s + (t.rent || 0), 0);
+            const month = nowMonth();
+            const thisMonthIncome = D().bills.filter(b => b.paid && b.month === month).reduce((s, b) => s + (b.total || 0), 0);
+            const thisMonthExp = D().expenses.filter(e => e.date && e.date.slice(0, 7) === month).reduce((s, e) => s + (e.amount || 0), 0);
+
+            const unpaidHTML = unpaid.length ? unpaid.map(b => {
+                const t = D().tenants.find(x => x.id === b.tenantId);
+                if (!t) return '';
+                return `<div class="list-item">
+                    <div class="item-row1"><span class="item-name">${t.name}</span><span class="room-tag">${t.room}室</span></div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px">
+                        <span class="item-info">${monthLabel(b.month)}</span>
+                        <span class="item-amount">¥${fmt(b.total)}</span>
+                    </div>
+                    <div class="btn-row">
+                        <button class="btn btn-success btn-sm" onclick="markPaid('${b.id}')">✅ 已缴</button>
+                        <button class="btn btn-outline btn-sm" onclick="previewBill('${b.tenantId}','${b.month}')">查看</button>
+                    </div>
+                </div>`;
+            }).join('') : '<div class="empty"><div class="ei">🎉</div>暂无待缴账单</div>';
+
+            const debtHTML = debts.length ? `<div class="section-label">⚠️ 欠款追踪（${debts.length}条）</div>` + debts.map(b => {
+                const t = D().tenants.find(x => x.id === b.tenantId);
+                if (!t) return '';
+                return `<div class="list-item" style="border-left:3px solid #f14668">
+                    <div class="item-row1"><span class="item-name">${t.name}</span><span class="badge badge-red">欠款</span></div>
+                    <div class="item-info">💰 欠 ¥${fmt(b.debtAmount || b.total)}</div>
+                    <div class="btn-row">
+                        <button class="btn btn-success btn-sm" onclick="markPaid('${b.id}')">
