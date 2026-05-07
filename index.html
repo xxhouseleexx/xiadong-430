@@ -2,139 +2,588 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>下东430号 · 出租屋管理</title>
-<link rel="stylesheet" href="style.css">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>下东430号</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;background:#faf9f6;color:#1f1d1a;min-height:100vh;padding-bottom:72px;font-size:14px;line-height:1.5}
+.hdr{background:#fff;border-bottom:1px solid #ece9e2;padding:14px 18px;position:sticky;top:0;z-index:50}
+.hdr h1{font-size:15px;font-weight:600;display:flex;align-items:center;gap:8px}
+.hdr .sub{font-size:11px;color:#8a8478;margin-top:3px}
+.dot{width:7px;height:7px;border-radius:50%;background:#16a34a;display:inline-block}
+.dot.s{background:#d97706;animation:pl 1s infinite}
+.dot.e{background:#dc2626}
+@keyframes pl{50%{opacity:.3}}
+.nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #ece9e2;display:flex;z-index:100}
+.nav button{flex:1;padding:9px 0 8px;border:0;background:none;font-size:10px;color:#8a8478;cursor:pointer;font-family:inherit}
+.nav button.on{color:#c2410c}
+.nav .ic{font-size:18px;display:block;margin-bottom:2px}
+.pg{display:none;padding:16px}
+.pg.on{display:block}
+.card{background:#fff;border:1px solid #ece9e2;border-radius:12px;padding:16px;margin-bottom:12px}
+.card h3{font-size:11px;font-weight:600;color:#8a8478;text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.st{background:#fff;border:1px solid #ece9e2;border-radius:10px;padding:14px}
+.st .n{font-size:20px;font-weight:700;line-height:1.1}
+.st .l{font-size:10px;color:#8a8478;margin-top:4px;letter-spacing:.3px}
+.amber{color:#c2410c}.green{color:#16a34a}.red{color:#dc2626}
+.it{background:#fff;border:1px solid #ece9e2;border-radius:10px;padding:13px;margin-bottom:8px}
+.it .r1{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.it .nm{font-size:14px;font-weight:600}
+.it .rm{background:#fef3c7;color:#c2410c;padding:2px 8px;border-radius:5px;font-size:11px;font-weight:600}
+.it .info{font-size:12px;color:#6b6660;line-height:1.7}
+.amt{font-size:16px;font-weight:700}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:4px;padding:10px 14px;border:0;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;width:100%;margin-bottom:6px;font-family:inherit}
+.btn:active{opacity:.8}.btn:last-child{margin-bottom:0}
+.bp{background:#1f1d1a;color:#fff}
+.bs{background:#16a34a;color:#fff}
+.bd{background:#dc2626;color:#fff}
+.ba{background:#c2410c;color:#fff}
+.bo{background:#fff;color:#1f1d1a;border:1px solid #ece9e2}
+.bg{background:#f5f3ed;color:#5a544a;border:1px solid #ece9e2}
+.sm{padding:6px 11px;font-size:11px;width:auto}
+.btns{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.fm{margin-bottom:11px}
+.fm label{display:block;font-size:11px;color:#6b6660;margin-bottom:4px;font-weight:500}
+.fm input,.fm select{width:100%;padding:10px 12px;border:1px solid #ece9e2;border-radius:8px;font-size:14px;outline:0;background:#fff;font-family:inherit;-webkit-appearance:none}
+.fm input:focus,.fm select:focus{border-color:#c2410c}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.md{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:500;align-items:flex-end;justify-content:center}
+.md.on{display:flex}
+.mb{background:#fff;border-radius:16px 16px 0 0;padding:18px 16px 28px;width:100%;max-height:90vh;overflow-y:auto}
+.mh{width:34px;height:4px;background:#ece9e2;border-radius:2px;margin:0 auto 14px}
+.mt{font-size:15px;font-weight:700;margin-bottom:14px}
+.tt{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#1f1d1a;color:#fff;padding:10px 18px;border-radius:8px;font-size:13px;z-index:999;opacity:0;transition:opacity .2s;pointer-events:none}
+.tt.on{opacity:1}
+.em{text-align:center;color:#b8b1a4;padding:30px 16px;font-size:13px}
+.em .i{font-size:30px;margin-bottom:8px}
+.lb{font-size:10px;color:#8a8478;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin:14px 4px 8px}
+.cc{background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:10px;font-size:12px;color:#92400e;line-height:1.8;margin-top:6px}
+.ld{position:fixed;inset:0;background:#faf9f6;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999}
+.ld .lg{font-size:38px;margin-bottom:12px}
+.ld .lt{font-size:13px;color:#6b6660;margin-bottom:14px}
+.sp{width:26px;height:26px;border:2px solid #ece9e2;border-top-color:#c2410c;border-radius:50%;animation:sp .7s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.bd-card{background:#fff;border:1px solid #ece9e2;border-radius:12px;padding:18px;margin-bottom:10px}
+.bd-card h2{font-size:16px;font-weight:700;text-align:center;margin-bottom:4px}
+.bd-card .bsub{font-size:11px;color:#8a8478;text-align:center;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid #ece9e2}
+.bd-card .br{display:flex;justify-content:space-between;padding:6px 0;font-size:13px}
+.bd-card .br .k{color:#6b6660}
+.bd-card .br .v{font-weight:600}
+.bd-card .tot{display:flex;justify-content:space-between;padding-top:10px;margin-top:6px;border-top:2px solid #1f1d1a;font-size:15px;font-weight:700}
+@media(min-width:600px){body{max-width:480px;margin:0 auto;border-left:1px solid #ece9e2;border-right:1px solid #ece9e2}.nav{max-width:480px;left:50%;transform:translateX(-50%)}}
+</style>
 </head>
 <body>
-<div class="loading" id="LS">
-  <div class="lg">🏠</div>
-  <div class="lt">下东430号 · 正在连接云端...</div>
-  <div class="spinner"></div>
+
+<div class="ld" id="LD"><div class="lg">🏠</div><div class="lt">正在连接云端…</div><div class="sp"></div></div>
+
+<div class="hdr">
+  <h1><span class="dot" id="SD"></span>下东430号</h1>
+  <div class="sub" id="DT"></div>
 </div>
 
-<div class="topbar">
-  <h1><span class="dot" id="SD"></span>下东430号 · 出租屋管理</h1>
-  <div class="sub" id="TD"></div>
+<div class="pg on" id="p-home"></div>
+<div class="pg" id="p-tenants"></div>
+<div class="pg" id="p-meter"></div>
+<div class="pg" id="p-bill"></div>
+<div class="pg" id="p-more"></div>
+
+<div class="nav">
+  <button class="on" data-p="home"><span class="ic">📊</span>总览</button>
+  <button data-p="tenants"><span class="ic">👥</span>租客</button>
+  <button data-p="meter"><span class="ic">⚡</span>抄表</button>
+  <button data-p="bill"><span class="ic">🧾</span>账单</button>
+  <button data-p="more"><span class="ic">⚙️</span>更多</button>
 </div>
 
-<div class="page active" id="page-home"></div>
-<div class="page" id="page-tenants"></div>
-<div class="page" id="page-meter"></div>
-<div class="page" id="page-bill"></div>
-<div class="page" id="page-finance"></div>
-<div class="page" id="page-more"></div>
-
-<div class="bottom-nav">
-  <div class="nav-item active" onclick="showPage('home',this)"><div class="ic">📊</div><div>总览</div></div>
-  <div class="nav-item" onclick="showPage('tenants',this)"><div class="ic">👥</div><div>租客</div></div>
-  <div class="nav-item" onclick="showPage('meter',this)"><div class="ic">⚡</div><div>抄表</div></div>
-  <div class="nav-item" onclick="showPage('bill',this)"><div class="ic">🧾</div><div>账单</div></div>
-  <div class="nav-item" onclick="showPage('finance',this)"><div class="ic">💰</div><div>财务</div></div>
-  <div class="nav-item" onclick="showPage('more',this)"><div class="ic">⚙️</div><div>更多</div></div>
-</div>
-
-<div class="modal-overlay" id="M_tenant">
-  <div class="mbox">
-    <div class="mhandle"></div>
-    <div class="mtitle" id="M_tenant_title">添加租客</div>
-    <input type="hidden" id="e_id">
-    <div class="form-row">
-      <div class="form-item"><label>姓名 *</label><input id="e_name"></div>
-      <div class="form-item"><label>房间号 *</label><input id="e_room" placeholder="如 101"></div>
+<div class="md" id="m-tenant">
+  <div class="mb">
+    <div class="mh"></div>
+    <div class="mt" id="mt-t">添加租客</div>
+    <input type="hidden" id="e-id">
+    <div class="row">
+      <div class="fm"><label>姓名 *</label><input id="e-name"></div>
+      <div class="fm"><label>房间 *</label><input id="e-room" placeholder="101"></div>
     </div>
-    <div class="form-item"><label>联系电话</label><input id="e_phone" type="tel"></div>
-    <div class="form-item"><label>入住日期</label><input id="e_checkin" type="date"></div>
-    <div class="form-row">
-      <div class="form-item"><label>月租金</label><input id="e_rent" type="number" inputmode="decimal"></div>
-      <div class="form-item"><label>押金</label><input id="e_deposit" type="number" inputmode="decimal"></div>
+    <div class="fm"><label>电话</label><input id="e-phone" type="tel"></div>
+    <div class="row">
+      <div class="fm"><label>月租</label><input id="e-rent" type="number" inputmode="decimal"></div>
+      <div class="fm"><label>押金</label><input id="e-dep" type="number" inputmode="decimal"></div>
     </div>
-    <div class="form-item"><label>押金状态</label>
-      <select id="e_dstatus">
-        <option value="held">已收</option>
-        <option value="bad">未收（坏账）</option>
-        <option value="returned">已退还</option>
-      </select>
+    <div class="row">
+      <div class="fm"><label>卫生费</label><input id="e-clean" type="number" inputmode="decimal"></div>
+      <div class="fm"><label>网费</label><input id="e-net" type="number" inputmode="decimal"></div>
     </div>
-    <div class="form-row">
-      <div class="form-item"><label>卫生费/月</label><input id="e_clean" type="number" inputmode="decimal"></div>
-      <div class="form-item"><label>网费/月</label><input id="e_net" type="number" inputmode="decimal"></div>
-    </div>
-    <div class="form-item"><label>备注</label><input id="e_note"></div>
-    <button class="btn btn-primary" onclick="saveTenant()">保存</button>
-    <button class="btn btn-gray" onclick="CM('M_tenant')">取消</button>
+    <button class="btn bp" onclick="saveTenant()">保存</button>
+    <button class="btn bg" onclick="cm('m-tenant')">取消</button>
   </div>
 </div>
 
-<div class="modal-overlay" id="M_meter">
-  <div class="mbox">
-    <div class="mhandle"></div>
-    <div class="mtitle">录入表数</div>
-    <div class="form-item"><label>租客</label><input id="m_name" readonly></div>
-    <input type="hidden" id="m_tid">
-    <div class="form-item"><label>月份</label><input id="m_month" type="month"></div>
-    <div class="form-row">
-      <div class="form-item"><label>上月电表</label><input id="m_el" type="number" inputmode="decimal" oninput="calcMeter()"></div>
-      <div class="form-item"><label>本月电表</label><input id="m_ec" type="number" inputmode="decimal" oninput="calcMeter()"></div>
+<div class="md" id="m-meter">
+  <div class="mb">
+    <div class="mh"></div>
+    <div class="mt">录入表数</div>
+    <div class="fm"><label>租客</label><input id="m-name" readonly style="background:#f5f3ed"></div>
+    <input type="hidden" id="m-tid">
+    <div class="fm"><label>月份</label><input id="m-month" type="month"></div>
+    <div class="row">
+      <div class="fm"><label>上月电表</label><input id="m-el" type="number" inputmode="decimal" oninput="calcM()"></div>
+      <div class="fm"><label>本月电表</label><input id="m-ec" type="number" inputmode="decimal" oninput="calcM()"></div>
     </div>
-    <div class="form-row">
-      <div class="form-item"><label>上月水表</label><input id="m_wl" type="number" inputmode="decimal" oninput="calcMeter()"></div>
-      <div class="form-item"><label>本月水表</label><input id="m_wc" type="number" inputmode="decimal" oninput="calcMeter()"></div>
+    <div class="row">
+      <div class="fm"><label>上月水表</label><input id="m-wl" type="number" inputmode="decimal" oninput="calcM()"></div>
+      <div class="fm"><label>本月水表</label><input id="m-wc" type="number" inputmode="decimal" oninput="calcM()"></div>
     </div>
-    <div class="calc-box" id="mCalc">填写表数后自动计算</div>
-    <button class="btn btn-primary" style="margin-top:12px" onclick="saveMeter()">保存表数</button>
-    <button class="btn btn-gray" onclick="CM('M_meter')">取消</button>
+    <div class="cc" id="m-calc">填入表数后自动计算</div>
+    <button class="btn bp" style="margin-top:10px" onclick="saveMeter()">保存</button>
+    <button class="btn bg" onclick="cm('m-meter')">取消</button>
   </div>
 </div>
 
-<div class="modal-overlay" id="M_expense">
-  <div class="mbox">
-    <div class="mhandle"></div>
-    <div class="mtitle">记录支出 / 采购</div>
-    <input type="hidden" id="ex_id">
-    <div class="form-row">
-      <div class="form-item"><label>类型</label>
-        <select id="ex_type">
-          <option value="material">材料采购</option>
-          <option value="repair">维修费用</option>
-          <option value="utility">水电公摊</option>
-          <option value="cleaning">卫生清洁</option>
-          <option value="other">其他</option>
-        </select>
-      </div>
-      <div class="form-item"><label>日期</label><input id="ex_date" type="date"></div>
-    </div>
-    <div class="form-item"><label>金额 *</label><input id="ex_amount" type="number" inputmode="decimal"></div>
-    <div class="form-item"><label>说明 *</label><input id="ex_desc" placeholder="如：购买水管、灯泡"></div>
-    <div class="form-item"><label>关联房间（选填）</label><input id="ex_room"></div>
-    <div class="form-item"><label>备注</label><input id="ex_note"></div>
-    <button class="btn btn-amber" onclick="saveExpense()">保存支出</button>
-    <button class="btn btn-gray" onclick="CM('M_expense')">取消</button>
+<div class="md" id="m-bill">
+  <div class="mb">
+    <div class="mh"></div>
+    <div id="m-bill-c"></div>
+    <button class="btn bg" onclick="cm('m-bill')">关闭</button>
   </div>
 </div>
 
-<div class="modal-overlay" id="M_bill">
-  <div class="mbox">
-    <div class="mhandle"></div>
-    <div id="M_bill_content"></div>
-    <button class="btn btn-gray" style="margin-top:6px" onclick="CM('M_bill')">关闭</button>
-  </div>
-</div>
+<div class="tt" id="TS"></div>
 
-<div class="confirm-overlay" id="M_confirm">
-  <div class="cbox">
-    <div class="ct" id="c_title"></div>
-    <div class="cs" id="c_msg"></div>
-    <div class="cbtns">
-      <button class="btn btn-gray" onclick="CM('M_confirm')">取消</button>
-      <button class="btn btn-danger" id="c_ok">确认</button>
-    </div>
-  </div>
-</div>
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";
+import {getFirestore,collection,doc,setDoc,deleteDoc,onSnapshot} from "https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore.js";
 
-<div class="toast" id="TOAST"></div>
+const app = initializeApp({
+  apiKey:"AIzaSyBUJeiIHJUnDtNYszLz5HEDUiKaDc8Th3M",
+  authDomain:"xiadong-430.firebaseapp.com",
+  projectId:"xiadong-430",
+  storageBucket:"xiadong-430.firebasestorage.app",
+  messagingSenderId:"1062042458951",
+  appId:"1:1062042458951:web:0b0341fe18cbe01d9cca62"
+});
+const db = getFirestore(app);
 
-<script type="module" src="firebase.js"></script>
-<script src="app.js"></script>
+window.D = {tenants:[],meters:[],bills:[],settings:{elec:0.6,water:3.5}};
+
+function ss(s){
+  const d = document.getElementById('SD');
+  d.className = 'dot' + (s==='syncing'?' s':s==='error'?' e':'');
+}
+
+function listen(name,key){
+  onSnapshot(collection(db,name), snap=>{
+    window.D[key] = [];
+    snap.forEach(d => window.D[key].push({id:d.id, ...d.data()}));
+    ss('ok');
+    if(window.refresh) window.refresh();
+  }, err => {
+    console.error(name, err);
+    ss('error');
+  });
+}
+
+onSnapshot(doc(db,'meta','settings'), snap=>{
+  if(snap.exists()) window.D.settings = snap.data();
+  if(window.refresh) window.refresh();
+});
+
+listen('tenants','tenants');
+listen('meters','meters');
+listen('bills','bills');
+
+window.FS = async (col,id,data) => {
+  ss('syncing');
+  try { await setDoc(doc(db,col,id),data); ss('ok'); }
+  catch(e){ ss('error'); window.toast('❌ 同步失败'); console.error(e); }
+};
+window.FD = async (col,id) => {
+  ss('syncing');
+  try { await deleteDoc(doc(db,col,id)); ss('ok'); }
+  catch(e){ ss('error'); }
+};
+window.FSS = async (data) => {
+  ss('syncing');
+  try { await setDoc(doc(db,'meta','settings'),data); ss('ok'); }
+  catch(e){ ss('error'); }
+};
+
+setTimeout(()=>{
+  document.getElementById('LD').style.display='none';
+  if(window.refresh) window.refresh();
+}, 1500);
+</script>
+
+<script>
+// ===== 工具函数 =====
+function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+function nowM(){ return new Date().toISOString().slice(0,7); }
+function fmt(n){ return (parseFloat(n)||0).toFixed(2); }
+function G(){ return window.D || {tenants:[],meters:[],bills:[],settings:{elec:0.6,water:3.5}}; }
+
+document.getElementById('DT').textContent = new Date().toLocaleDateString('zh-CN',{year:'numeric',month:'long',day:'numeric',weekday:'long'});
+
+window.toast = function(msg){
+  const t = document.getElementById('TS');
+  t.textContent = msg;
+  t.classList.add('on');
+  setTimeout(()=>t.classList.remove('on'), 1800);
+};
+
+window.om = function(id){ document.getElementById(id).classList.add('on'); };
+window.cm = function(id){ document.getElementById(id).classList.remove('on'); };
+
+// ===== 页面切换 =====
+let curPage = 'home';
+window.refresh = function(){
+  const fn = {home:rHome, tenants:rTenants, meter:rMeter, bill:rBill, more:rMore}[curPage];
+  if(fn) fn();
+};
+
+document.querySelectorAll('.nav button').forEach(btn => {
+  btn.onclick = function(){
+    const p = this.dataset.p;
+    document.querySelectorAll('.pg').forEach(x => x.classList.remove('on'));
+    document.querySelectorAll('.nav button').forEach(x => x.classList.remove('on'));
+    document.getElementById('p-' + p).classList.add('on');
+    this.classList.add('on');
+    curPage = p;
+    window.refresh();
+  };
+});
+
+// ===== 总览 =====
+function rHome(){
+  const pg = document.getElementById('p-home');
+  const active = G().tenants.filter(t => t.active !== false);
+  const totalRent = active.reduce((s,t) => s + (t.rent||0), 0);
+  const m = nowM();
+  const unpaid = G().bills.filter(b => !b.paid);
+  const monthIn = G().bills.filter(b => b.paid && b.month === m).reduce((s,b)=>s+(b.total||0),0);
+
+  let unpaidHTML = '';
+  if(unpaid.length === 0){
+    unpaidHTML = '<div class="em"><div class="i">🎉</div>暂无待缴账单</div>';
+  } else {
+    unpaidHTML = unpaid.map(b => {
+      const t = G().tenants.find(x => x.id === b.tenantId);
+      if(!t) return '';
+      return '<div class="it">' +
+        '<div class="r1"><span class="nm">' + t.name + '</span><span class="rm">' + t.room + '室</span></div>' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px">' +
+          '<span class="info">' + (b.month||'') + '</span>' +
+          '<span class="amt amber">¥' + fmt(b.total) + '</span>' +
+        '</div>' +
+        '<div class="btns"><button class="btn bs sm" onclick="markPaid(\'' + b.id + '\')">✓ 已缴</button></div>' +
+      '</div>';
+    }).join('');
+  }
+
+  pg.innerHTML =
+    '<div class="stats">' +
+      '<div class="st"><div class="n">' + active.length + '</div><div class="l">在租房间</div></div>' +
+      '<div class="st"><div class="n amber">¥' + fmt(totalRent) + '</div><div class="l">月租合计</div></div>' +
+      '<div class="st"><div class="n green">¥' + fmt(monthIn) + '</div><div class="l">本月已收</div></div>' +
+      '<div class="st"><div class="n">' + unpaid.length + '</div><div class="l">待缴账单</div></div>' +
+    '</div>' +
+    '<div class="lb">待缴账单</div>' + unpaidHTML +
+    '<div class="lb">快捷操作</div>' +
+    '<div class="card">' +
+      '<button class="btn bp" onclick="oTen()">＋ 添加租客</button>' +
+      '<button class="btn bo" onclick="document.querySelector(\'[data-p=meter]\').click()">去抄表</button>' +
+      '<button class="btn bo" onclick="document.querySelector(\'[data-p=bill]\').click()">生成账单</button>' +
+    '</div>';
+}
+
+// ===== 租客 =====
+function rTenants(){
+  const pg = document.getElementById('p-tenants');
+  const active = G().tenants.filter(t => t.active !== false);
+  const inactive = G().tenants.filter(t => t.active === false);
+
+  function tHTML(t){
+    return '<div class="it">' +
+      '<div class="r1"><span class="nm">' + t.name + '</span><span class="rm">' + t.room + '室</span></div>' +
+      '<div class="info">' +
+        (t.phone ? '📞 ' + t.phone + '<br>' : '') +
+        '💰 月租 <b>¥' + fmt(t.rent) + '</b>　押金 ¥' + fmt(t.dep) + '<br>' +
+        '🧹 卫生 ¥' + fmt(t.clean) + '/月　📶 网费 ¥' + fmt(t.net) + '/月' +
+      '</div>' +
+      '<div class="btns">' +
+        '<button class="btn bo sm" onclick="oTen(\'' + t.id + '\')">编辑</button>' +
+        '<button class="btn bo sm" onclick="oMet(\'' + t.id + '\')">抄表</button>' +
+        '<button class="btn bd sm" onclick="togTen(\'' + t.id + '\')">' + (t.active !== false ? '退租' : '恢复') + '</button>' +
+      '</div>' +
+    '</div>';
+  }
+
+  let html = '<button class="btn bp" onclick="oTen()">＋ 添加新租客</button>' +
+             '<div class="lb">在租 (' + active.length + '人)</div>';
+  html += active.length ? active.map(tHTML).join('') : '<div class="em">暂无租客</div>';
+  if(inactive.length){
+    html += '<div class="lb">已退租 (' + inactive.length + '人)</div>';
+    html += inactive.map(tHTML).join('');
+  }
+  pg.innerHTML = html;
+}
+
+window.oTen = function(id){
+  const fields = ['name','room','phone','rent','dep','clean','net'];
+  if(id){
+    const t = G().tenants.find(x => x.id === id);
+    if(!t) return;
+    document.getElementById('e-id').value = id;
+    fields.forEach(k => {
+      const el = document.getElementById('e-' + k);
+      if(el) el.value = t[k] || '';
+    });
+    document.getElementById('mt-t').textContent = '编辑租客';
+  } else {
+    document.getElementById('e-id').value = '';
+    fields.forEach(k => { const el = document.getElementById('e-' + k); if(el) el.value = ''; });
+    document.getElementById('mt-t').textContent = '添加租客';
+  }
+  om('m-tenant');
+};
+
+window.saveTenant = async function(){
+  const name = document.getElementById('e-name').value.trim();
+  const room = document.getElementById('e-room').value.trim();
+  if(!name || !room){ toast('⚠️ 姓名和房间必填'); return; }
+  const id = document.getElementById('e-id').value || uid();
+  const ex = G().tenants.find(x => x.id === id);
+  await window.FS('tenants', id, {
+    id, name, room,
+    active: ex ? ex.active : true,
+    phone: document.getElementById('e-phone').value,
+    rent: parseFloat(document.getElementById('e-rent').value) || 0,
+    dep: parseFloat(document.getElementById('e-dep').value) || 0,
+    clean: parseFloat(document.getElementById('e-clean').value) || 0,
+    net: parseFloat(document.getElementById('e-net').value) || 0
+  });
+  cm('m-tenant');
+  toast('✅ 已保存');
+};
+
+window.togTen = async function(id){
+  const t = G().tenants.find(x => x.id === id);
+  if(!t) return;
+  await window.FS('tenants', id, {...t, active: t.active === false});
+  toast(t.active === false ? '已恢复' : '已退租');
+};
+
+// ===== 抄表 =====
+function rMeter(){
+  const pg = document.getElementById('p-meter');
+  const active = G().tenants.filter(t => t.active !== false);
+  const m = nowM();
+
+  let items = active.map(t => {
+    const mt = G().meters.find(x => x.tenantId === t.id && x.month === m);
+    let info;
+    if(mt){
+      const eu = Math.max(0, mt.elecCur - mt.elecLast);
+      const wu = Math.max(0, mt.waterCur - mt.waterLast);
+      info = '⚡ ' + eu + '度　💧 ' + wu + '吨';
+    } else {
+      info = '<span class="amber">⚠️ 本月未抄表</span>';
+    }
+    return '<div class="it">' +
+      '<div class="r1"><span class="nm">' + t.name + '</span><span class="rm">' + t.room + '室</span></div>' +
+      '<div class="info">' + info + '</div>' +
+      '<div class="btns"><button class="btn bp sm" onclick="oMet(\'' + t.id + '\')">' + (mt?'修改':'录入') + '</button></div>' +
+    '</div>';
+  }).join('');
+
+  if(!active.length) items = '<div class="em">请先添加租客</div>';
+
+  pg.innerHTML = '<div class="lb">本月抄表 (' + m + ')</div>' + items;
+}
+
+window.oMet = function(tid){
+  const t = G().tenants.find(x => x.id === tid);
+  if(!t) return;
+  document.getElementById('m-tid').value = tid;
+  document.getElementById('m-name').value = t.name + ' · ' + t.room + '室';
+  document.getElementById('m-month').value = nowM();
+  const prev = G().meters.filter(x => x.tenantId === tid).sort((a,b) => b.month.localeCompare(a.month))[0];
+  const cur = G().meters.find(x => x.tenantId === tid && x.month === nowM());
+  document.getElementById('m-el').value = cur ? cur.elecLast : (prev ? prev.elecCur : '');
+  document.getElementById('m-ec').value = cur ? cur.elecCur : '';
+  document.getElementById('m-wl').value = cur ? cur.waterLast : (prev ? prev.waterCur : '');
+  document.getElementById('m-wc').value = cur ? cur.waterCur : '';
+  calcM();
+  om('m-meter');
+};
+
+window.calcM = function(){
+  const eu = Math.max(0, (parseFloat(document.getElementById('m-ec').value)||0) - (parseFloat(document.getElementById('m-el').value)||0));
+  const wu = Math.max(0, (parseFloat(document.getElementById('m-wc').value)||0) - (parseFloat(document.getElementById('m-wl').value)||0));
+  const ep = G().settings.elec, wp = G().settings.water;
+  document.getElementById('m-calc').innerHTML =
+    '⚡ 用电 <b>' + eu + '度</b> × ¥' + ep + ' = <b>¥' + fmt(eu*ep) + '</b><br>' +
+    '💧 用水 <b>' + wu + '吨</b> × ¥' + wp + ' = <b>¥' + fmt(wu*wp) + '</b>';
+};
+
+window.saveMeter = async function(){
+  const tid = document.getElementById('m-tid').value;
+  const month = document.getElementById('m-month').value;
+  if(!tid || !month){ toast('⚠️ 请选月份'); return; }
+  const ex = G().meters.find(m => m.tenantId === tid && m.month === month);
+  const id = ex ? ex.id : uid();
+  await window.FS('meters', id, {
+    id, tenantId: tid, month,
+    elecLast: parseFloat(document.getElementById('m-el').value) || 0,
+    elecCur: parseFloat(document.getElementById('m-ec').value) || 0,
+    waterLast: parseFloat(document.getElementById('m-wl').value) || 0,
+    waterCur: parseFloat(document.getElementById('m-wc').value) || 0
+  });
+  cm('m-meter');
+  toast('✅ 已保存');
+};
+
+// ===== 账单 =====
+function buildBill(t, month){
+  const mt = G().meters.find(x => x.tenantId === t.id && x.month === month);
+  const ep = G().settings.elec, wp = G().settings.water;
+  const eu = mt ? Math.max(0, mt.elecCur - mt.elecLast) : 0;
+  const wu = mt ? Math.max(0, mt.waterCur - mt.waterLast) : 0;
+  const ef = eu * ep, wf = wu * wp;
+  const total = (t.rent||0) + ef + wf + (t.clean||0) + (t.net||0);
+  return {t, month, eu, wu, ef, wf, total, ep, wp, hasMeter: !!mt};
+}
+
+function rBill(){
+  const pg = document.getElementById('p-bill');
+  const active = G().tenants.filter(t => t.active !== false);
+  const m = nowM();
+
+  let items = active.map(t => {
+    const b = buildBill(t, m);
+    return '<div class="it">' +
+      '<div class="r1"><span class="nm">' + t.name + '</span><span class="rm">' + t.room + '室</span></div>' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px">' +
+        '<span class="info">' + (b.hasMeter ? '已抄表' : '<span class="amber">未抄表</span>') + '</span>' +
+        '<span class="amt amber">¥' + fmt(b.total) + '</span>' +
+      '</div>' +
+      '<div class="btns">' +
+        '<button class="btn bo sm" onclick="prevBill(\'' + t.id + '\')">预览</button>' +
+        '<button class="btn bp sm" onclick="saveBill(\'' + t.id + '\')">保存</button>' +
+        '<button class="btn bs sm" onclick="copyBill(\'' + t.id + '\')">复制</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+
+  if(!active.length) items = '<div class="em">请先添加租客</div>';
+
+  pg.innerHTML =
+    (active.length ? '<button class="btn bs" onclick="batchSave()">批量保存全部账单</button>' : '') +
+    '<div class="lb">本月账单 (' + m + ')</div>' + items;
+}
+
+window.prevBill = function(tid){
+  const t = G().tenants.find(x => x.id === tid);
+  if(!t) return;
+  const b = buildBill(t, nowM());
+  document.getElementById('m-bill-c').innerHTML =
+    '<div class="bd-card">' +
+      '<h2>🏠 租金账单</h2>' +
+      '<div class="bsub">' + t.name + ' · ' + t.room + '室 · ' + b.month + '</div>' +
+      '<div class="br"><span class="k">月租金</span><span class="v">¥' + fmt(t.rent) + '</span></div>' +
+      '<div class="br"><span class="k">电费 ' + b.eu + '度 × ¥' + b.ep + '</span><span class="v">¥' + fmt(b.ef) + '</span></div>' +
+      '<div class="br"><span class="k">水费 ' + b.wu + '吨 × ¥' + b.wp + '</span><span class="v">¥' + fmt(b.wf) + '</span></div>' +
+      '<div class="br"><span class="k">卫生费</span><span class="v">¥' + fmt(t.clean) + '</span></div>' +
+      '<div class="br"><span class="k">网费</span><span class="v">¥' + fmt(t.net) + '</span></div>' +
+      '<div class="tot"><span>合计应缴</span><span>¥' + fmt(b.total) + '</span></div>' +
+    '</div>' +
+    '<button class="btn bs" onclick="copyBill(\'' + tid + '\');cm(\'m-bill\')">复制发送给租客</button>' +
+    '<button class="btn bp" onclick="saveBill(\'' + tid + '\')">保存账单</button>';
+  om('m-bill');
+};
+
+window.saveBill = async function(tid){
+  const t = G().tenants.find(x => x.id === tid);
+  if(!t) return;
+  const b = buildBill(t, nowM());
+  const ex = G().bills.find(x => x.tenantId === tid && x.month === b.month);
+  const id = ex ? ex.id : uid();
+  await window.FS('bills', id, {
+    id, tenantId: tid, month: b.month, total: b.total,
+    paid: ex ? ex.paid : false
+  });
+  toast('✅ 已保存');
+};
+
+window.batchSave = async function(){
+  const active = G().tenants.filter(t => t.active !== false);
+  for(const t of active) await window.saveBill(t.id);
+  toast('✅ 已生成 ' + active.length + ' 张');
+};
+
+window.copyBill = function(tid){
+  const t = G().tenants.find(x => x.id === tid);
+  if(!t) return;
+  const b = buildBill(t, nowM());
+  const text =
+    '【租金账单】\n' +
+    t.room + '室 ' + t.name + '\n' +
+    '账单月份：' + b.month + '\n' +
+    '——————————\n' +
+    '月租金：¥' + fmt(t.rent) + '\n' +
+    '电费：' + b.eu + '度 × ¥' + b.ep + ' = ¥' + fmt(b.ef) + '\n' +
+    '水费：' + b.wu + '吨 × ¥' + b.wp + ' = ¥' + fmt(b.wf) + '\n' +
+    '卫生费：¥' + fmt(t.clean) + '\n' +
+    '网费：¥' + fmt(t.net) + '\n' +
+    '——————————\n' +
+    '合计：¥' + fmt(b.total);
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(text).then(()=>toast('✅ 已复制'));
+  } else {
+    const ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+    toast('✅ 已复制');
+  }
+};
+
+window.markPaid = async function(id){
+  const b = G().bills.find(x => x.id === id);
+  if(!b) return;
+  await window.FS('bills', id, {...b, paid: true});
+  toast('✅ 已标记缴费');
+};
+
+// ===== 设置 =====
+function rMore(){
+  const pg = document.getElementById('p-more');
+  const s = G().settings;
+  pg.innerHTML =
+    '<div class="card">' +
+      '<h3>费率设置</h3>' +
+      '<div class="fm"><label>电费（元/度）</label><input id="s-elec" type="number" step="0.01" value="' + s.elec + '"></div>' +
+      '<div class="fm"><label>水费（元/吨）</label><input id="s-water" type="number" step="0.01" value="' + s.water + '"></div>' +
+      '<button class="btn bp" onclick="saveSet()">保存设置</button>' +
+    '</div>' +
+    '<div class="card">' +
+      '<h3>数据统计</h3>' +
+      '<div class="info">租客：' + G().tenants.length + ' 人<br>抄表：' + G().meters.length + ' 条<br>账单：' + G().bills.length + ' 张</div>' +
+    '</div>' +
+    '<div class="card">' +
+      '<h3>关于</h3>' +
+      '<div class="info">下东430号 · 出租屋管理<br>数据云端实时同步<br>Mac / iPhone 通用</div>' +
+    '</div>';
+}
+
+window.saveSet = async function(){
+  const e = parseFloat(document.getElementById('s-elec').value) || 0.6;
+  const w = parseFloat(document.getElementById('s-water').value) || 3.5;
+  await window.FSS({elec: e, water: w});
+  toast('✅ 已保存');
+};
+
+// 首屏渲染
+rHome();
+</script>
 </body>
 </html>
